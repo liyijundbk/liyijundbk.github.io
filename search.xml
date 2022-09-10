@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>NTP（客户端的配置）</title>
+    <url>/2022/09/08/NTP%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E9%85%8D%E7%BD%AE%EF%BC%89/</url>
+    <content><![CDATA[<p>NTP是什么</p>
+<p>NTP（network time protocol）</p>
+<p>时间同步：将计算机与指定服务器时间同步。</p>
+<p>NTP的服务端（考试服务器）：NTPd，chronyd</p>
+<p>NTP的客户端：软件包chrony（系统服务chronyd）</p>
+<p>客户机的配置文件：&#x2F;etc&#x2F;chrony.conf</p>
+<p>chrony软件包的安装：yum -y install chrony</p>
+<p>pool的时间服务器的域名是iburst。  &#x2F;&#x2F;这个域名可以解析成一堆ip</p>
+<p>sever的时间服务器的域名是iburst。&#x2F;&#x2F;这个域名可以解析成一个ip</p>
+<p>NTP的验证&#x2F;设置工具</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.timedatectl(查看NTP的验证）</span><br><span class="line"></span><br><span class="line">更改时间的命令date -s &#x27;2002-02-02&#x27;,查看时间date命令</span><br><span class="line"></span><br><span class="line">chronyc sources -v(查看时间源执行情况)</span><br></pre></td></tr></table></figure>
+
+<p>因为NTP是服务，更改配置时，需要重启。</p>
+<p>systemctl restart chroyd</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>READ储存</title>
+    <url>/2022/08/28/READ%E5%82%A8%E5%AD%98/</url>
+    <content><![CDATA[<p>1、RAID 0<br>它是无数据冗余的存储空间条带化，具有成本低、读写性能高、存储空间利用率高等特点，适用于音、视频信号存储、临时文件的转储等对速度要求极其严格的特殊应用。但由于没有数据冗余，其安全性大大降低，构成阵列的任何一块硬盘的损坏都将带来灾难性的数据损失。这种方式其实没有冗余功能，没有安全保护，只是提高了磁盘读写性能和整个服务器的磁盘容量。<br><img src="/raid/1.jpg" alt="header"><br>2、RAID 1<br>是两块硬盘数据完全镜像，安全性好、技术简单、管理方便、读写性能均好。因为它是一一对应的，所以它无法单块硬盘扩展，要扩展，必须同时对镜像的双方进行同容量的扩展。因为这种冗余方式为了安全起见，实际上只利用了一半的磁盘容量，数据空间浪费大。<br><img src="/raid/2.jpg" alt="header"><br>3、RAID 0+1<br>也有写为RAID 10，综合了RAID 0和RAID 1的特点，独立磁盘配置成RAID 0，两套完整的RAID 0互相镜像。它的读写性能出色，安全性高，但构建阵列的成本投入大，数据空间利用率低。<br><img src="/raid/4.jpg" alt="header"><br>4、RAID 5<br>是目前应用最广泛的RAID技术。各块独立硬盘进行条带化分割，相同的条带区进行奇偶校验，校验数据平均分布在每块硬盘上。以N块硬盘构建的RAID 5阵列可以有N-1块硬盘的容量，存储空间利用率非常高。任何一块硬盘上的数据丢失，均可以通过校验数据推算出来，它和RAID 3最大的区别在于校验数据是否平均分布到各块硬盘上。RAID 5具有数据安全、读写速度快、空间利用率高等优点，应用非常广泛，但不足之处是如果1块硬盘出现故障以后，整个系统的性能将大大降低。<br><img src="/raid/3.jpg" alt="header"> </p>
+]]></content>
+      <categories>
+        <category>网络设备</category>
+      </categories>
+      <tags>
+        <tag>储存</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RED hat的基础命令</title>
+    <url>/2022/09/03/RED-Hat/</url>
+    <content><![CDATA[<p>BAsh shell的介绍</p>
+<p>命令是基于文本的界面，可用于向计算机系统输入命令。如果以交互方式使用shell，他在等待用户输入命令的时候显示的字符串就是shell提示符。普通用户启动shell时默认提示符是$,如下所示</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">【用户名@主机名】$</span><br></pre></td></tr></table></figure>
+
+<p>如果使用的是超级用户的情况下其提示符是#，如下所示：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">【用户名@主机名】#</span><br></pre></td></tr></table></figure>
+
+<p>重要：bush与windons的cmd.exe相似，但是bush是更加复杂的脚本语言，而mac os采用的就是bush。</p>
+<p>在shell提示符下输入的命令分为三部分，分别是</p>
+<p>1.要运行的命令</p>
+<p>2.用于调用命令行为的选项</p>
+<p>3.通常作为命令目标的参数</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">rm（命令） -m（命令行为） a.txt（文件）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>shell的快捷方式：Ctrl+Alt+功能键（F1到F6）</p>
+<p>基本命令语法：</p>
+<p>首先你需通过Ctrl+Alt+功能键（F1到F6），打开bash。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@host]$whoami(表示当前使用用户)</span><br><span class="line">lyj</span><br></pre></td></tr></table></figure>
+
+<p>如果你希望一行中运行多条命令，则可以使用（;）作为命令分隔符，以下演示如何在命令中整合两个命令：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@host]$ command1;command2</span><br></pre></td></tr></table></figure>
+
+<p>简单命令演示：</p>
+<p>Date命令是显示当前时间，超级用户可以通过该命令设置闹钟。Date +%r表示以12小时显示。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">在linux中一切皆是文本</span><br></pre></td></tr></table></figure>
+
+<p>passwd命令是更改自己用户的密码。必须指定用户密码，默认情况下密码是强密码，超级用户时，可以通过passwd改root密码和其他用户的密码。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin ~]$ sudo passwd（改root密码）</span><br><span class="line"></span><br><span class="line">我们信任您已经从系统管理员那里了解了日常注意事项。</span><br><span class="line">总结起来无外乎这三点：</span><br><span class="line"></span><br><span class="line">    #1) 尊重别人的隐私。</span><br><span class="line">    #2) 输入前要先考虑(后果和风险)。</span><br><span class="line">    #3) 权力越大，责任越大。</span><br><span class="line">[sudo] lyj 的密码：</span><br><span class="line">更改用户 root 的密码 。</span><br><span class="line">新的 密码：</span><br><span class="line">无效的密码： 密码少于 8 个字符</span><br><span class="line">重新输入新的 密码：</span><br><span class="line">passwd：所有的身份验证令牌已经成功更新。</span><br><span class="line">[lyj@admin ~]$ passwd</span><br><span class="line">更改用户 lyj 的密码 。</span><br><span class="line">Current password: </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>linux不需要文件扩展名来根据类型分类。file命令可以扫描文件的开头。，显示文件的类型。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin wdsj]# file 1.txt</span><br><span class="line">1.txt: ASCII text</span><br><span class="line">[root@admin wdsj]# file /etc/passwd</span><br><span class="line">/etc/passwd: ASCII text</span><br><span class="line">[root@admin lyj]# file wdsj</span><br><span class="line">wdsj: directory</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>查看命令是cat。通过cat命令，你可以创建一个或者是多个文件。可以串联多个文件一起看，</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">查看多个文件：</span><br><span class="line">[root@admin wdsj]# cat 2.txt 1.txt</span><br><span class="line">2.txtxtxttx</span><br><span class="line">2.txtxttx2.txtxtxttx</span><br><span class="line">2.txtxttx</span><br><span class="line">2.txtxtxttx</span><br><span class="line">2.txtxttx</span><br><span class="line">2.txtxtxttx</span><br><span class="line">2.txtxttx2.txtxtxttx</span><br><span class="line">2.txtxttx</span><br><span class="line">2.txtxtxttx</span><br><span class="line">2.txtxttx</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">1.11.1..</span><br><span class="line">1.11.1..</span><br><span class="line">~          1.11.1..</span><br><span class="line"></span><br><span class="line">[root@admin etc]# cat /etc/passwd</span><br><span class="line">root:x:0:0:root:/root:/bin/bash</span><br><span class="line">bin:x:1:1:bin:/bin:/sbin/nologin</span><br><span class="line">daemon:x:2:2:daemon:/sbin:/sbin/nologin</span><br><span class="line">adm:x:3:4:adm:/var/adm:/sbin/nologin</span><br><span class="line">lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin</span><br><span class="line">sync:x:5:0:sync:/sbin:/bin/sync</span><br><span class="line">shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown</span><br><span class="line">halt:x:7:0:halt:/sbin:/sbin/halt</span><br><span class="line">mail:x:8:12:mail:/var/spool/mail:/sbin/nologin</span><br><span class="line">operator:x:11:0:operator:/root:/sbin/nologin</span><br><span class="line">games:x:12:100:games:/usr/games:/sbin/nologin</span><br><span class="line">ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin</span><br><span class="line">nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin</span><br><span class="line">dbus:x:81:81:System message bus:/:/sbin/nologin</span><br><span class="line">systemd-coredump:x:999:997:systemd Core Dumper:/:/sbin/nologin</span><br><span class="line">systemd-resolve:x:193:193:systemd Resolver:/:/sbin/nologin</span><br><span class="line">tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>wc命令计算文件中，行，字，字符的数量。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin etc]# wc passwd</span><br><span class="line">  47  115 2655 passwd</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>查看历史命令用history</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin etc]# history </span><br><span class="line">    1  nmcli connection up ?</span><br><span class="line">    2  nmcli connection up virbr0 </span><br><span class="line">    3  ip a</span><br><span class="line">    4  systemctl status NetworkManager.service</span><br><span class="line">    5  ip a</span><br><span class="line">    6  ping www.baidu.com</span><br><span class="line">    7  ip a</span><br><span class="line">    8  restart</span><br><span class="line">    9  reset</span><br><span class="line">   10  vim /etc/sysconfig/network-scripts/ifcfg-br0</span><br><span class="line">   11  ip a</span><br><span class="line">   12  nmtui</span><br><span class="line">   13  ip a</span><br><span class="line">   14  systemctl status NetworkManager.service</span><br><span class="line">   15  nmcli connection up virbr0 </span><br><span class="line">   16  ip a</span><br><span class="line">   17  ping 192.168.61.1</span><br><span class="line">   18  ping 192.168.61.129</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>感叹号字符（!）是元字符，应用在history命令而不需要新建他。！number命令拓展至与指定变化的命令。！string命令是拓展至最近一个以指定字符串开头的命令。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin etc]# !88</span><br><span class="line">wc passwd</span><br><span class="line">  47  115 2655 passwd</span><br><span class="line">[root@admin etc]# !ls</span><br><span class="line">ls</span><br><span class="line">adjtime                     hosts                     profile.d</span><br><span class="line">aliases                     hp                        protocols</span><br><span class="line">alsa                        idmapd.conf               pulse</span><br><span class="line">alternatives                init.d                    qemu-ga</span><br><span class="line">anacrontab                  inittab                   qemu-kvm</span><br><span class="line">asound.conf                 inputrc                   radvd.conf</span><br><span class="line">at.deny                     insights-client           ras</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>red hat</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RED hat的文件管理命令</title>
+    <url>/2022/09/03/RED-hat%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<p>文件系统层次结构：linux中所有的文件都存在系统文件中，他们好像一个颠倒的目录树，树根的下面是目录和子目录。</p>
+<p><img src="/linux2/1.jpg" alt="header"></p>
+<p>linux的主要目录</p>
+<p>&#x2F;user 安装的文件，共享的库，包括文件和只读程序数据。重要的子目录：</p>
+<p>   .&#x2F;user&#x2F;bin:用户命令</p>
+<p>   .&#x2F;user&#x2F;sbin:系统管理命令</p>
+<p>   .&#x2F;user&#x2F;local：本地自定义文件</p>
+<p>&#x2F;etc&#x2F;特定的系统配置文件。</p>
+<p>&#x2F;var&#x2F;log:这个是登录文件放置日志的的目录。里面比较重要的文件&#x2F;var&#x2F;log&#x2F;messages，&#x2F;var&#x2F;log&#x2F;harry(记录登陆者信息)等。</p>
+<p>&#x2F;var&#x2F;run&#x2F;：某些程序启动服务后，会将他们PID放置在这个目录下。</p>
+<p>&#x2F;var&#x2F;lib:程序本身执行的过程中需要使用到的数据文件放置的目录。再次目录下各自的软件应该要有各自的目录。举例来说，Mysql的数据库放置到&#x2F;var&#x2F;lib&#x2F;mysql，而rpm的数据库则放到&#x2F;var&#x2F;lib&#x2F;rpm目录下。</p>
+<p>&#x2F;root管理超级用户root的主目录</p>
+<p>&#x2F;dev 包含特殊的设备文件，提供系统用于访问硬件。</p>
+<p>&#x2F;boot 开机过程所需要的文件</p>
+<p>&#x2F;home&#x2F;主目录是普通用户存储个人配置和配置文件的位置 </p>
+<p>&#x2F;tmp&#x2F;存储临时文件。</p>
+<p>什么是绝对路径，相对路径？</p>
+<p>相对路径：从一个目录为起点到另外一个的目录的路径。<br>举例：<br>比如你的C盘有一个文件夹叫FIle，文件下有两个文件file one 和 file two<br>表示出file two的方法有两种</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">第一种（绝对路径表示法）：C：\FIle\file two</span><br><span class="line">第二种（相对路径表示法）：FIle two</span><br></pre></td></tr></table></figure>
+
+<p><strong>绝对路径</strong>：从根目录为起点到某一个目录的路径。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">例如：C:\FIle\path one\file one</span><br></pre></td></tr></table></figure>
+
+<p>命令pwd是显示该shell的当前工作目录，ls是显示该目录有哪些文件，</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin wdsj]$ pwd</span><br><span class="line">/home/lyj/wdsj</span><br><span class="line">[lyj@admin wdsj]$ ls</span><br><span class="line">1.txt  2.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>cd命令是来更改当前的工作目录，如果没有参数那么表示返回主目录，cd命令可以与绝对路径和相对路径一起使用。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin wdsj]$ pwd</span><br><span class="line">/home/lyj/wdsj</span><br><span class="line">[lyj@admin wdsj]$ cd</span><br><span class="line">[lyj@admin ~]$ pwd</span><br><span class="line">/home/lyj</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>touch创建文件，通常将文件的时间更新到当前日期和时间。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin wdsj]# ls</span><br><span class="line">1.txt  2.txt</span><br><span class="line">[root@admin wdsj]# touch 3.txt</span><br><span class="line">[root@admin wdsj]# ls</span><br><span class="line">1.txt  2.txt  3.txt</span><br><span class="line">[root@admin wdsj]# ls -l</span><br><span class="line">总用量 8</span><br><span class="line">-rw-r--r--. 1 root root 244 9月   3 09:55 1.txt</span><br><span class="line">-rw-r--r--. 1 root root 132 9月   3 10:03 2.txt</span><br><span class="line">-rw-r--r--. 1 root root   0 9月   3 11:50 3.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>red hat</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NGAF（下一代防火墙）</title>
+    <url>/2022/08/22/NGAF/</url>
+    <content><![CDATA[<p>传统防火墙<br><img src="/NGAF/1.jpg" alt="header"></p>
+<p>下一代防火墙的功能：应用控制策略、地址转换策略、安全防护策略、流量控制策略、用户认证策略。<br>NGAF的部署模式：路由模式，透明模式，虚拟网线模式（虚拟网线模式是成双成对的出现），旁路部署。 </p>
+<p> <img src="/NGAF/23.jpg" alt="header"></p>
+<p>基于用户和应用的内容安全控制</p>
+<p>需要基于用户和应用做安全控制，要求对用户进行识别和对应用进行识别。NGAF具备用户认证系统和海量的应用识别特征库。</p>
+<p>NGAF的功能：针对用户上网：</p>
+<p>1.用户认证（APT检测）</p>
+<p>2.URL过滤（网关扫毒）</p>
+<p>应用控制（DOS防护）</p>
+<p>流量管理（IPS）</p>
+<p>针对访问的服务器：</p>
+<p>用户认证：未授权访问，拒绝非法用户流量</p>
+<p>应用控制：减少不必要的访问，保护服务器的安全。</p>
+<p>服务器保护：sql注入攻击，xss攻击</p>
+<p>DOS防护:DDos攻击(、端口扫描、洪水攻击、协议报文攻击)</p>
+<p>IPS防护:漏洞攻击(针对服务器操作系统、软件漏洞)</p>
+<p>网站篡改防护</p>
+<p>风险分析</p>
+<h3 id="数据中心"><a href="#数据中心" class="headerlink" title="数据中心"></a>数据中心</h3><p>数据中心可以用于查询和统计各功能模块产生的日志。例如可以查询出WEB应用防护阻断的攻击行为，以及可以查询到攻击源IP，目标IP等详细信息。可以统计出服务器在指定的时间内受到多少次DOS攻击等。</p>
+<p>  <img src="/NGAF/4.jpg" alt="header"></p>
+<p>  <img src="/NGAF/5.jpg" alt="header"></p>
+]]></content>
+      <categories>
+        <category>网络设备</category>
+      </categories>
+      <tags>
+        <tag>深信服</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RHLE的网络配置</title>
+    <url>/2022/09/07/RHLE%E7%9A%84%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>1.rht -vmctl reset red（重置虚拟机）</p>
+<p>2.更改用户名用nmtui →set sysetm hostname —&gt;设置主机名字</p>
+<p>登录ssh root@主机名</p>
+<p>network ——&gt;NetworkManager(RHEL8已经没有network)</p>
+<p>RHEl 7&#x2F;8的系统管理器</p>
+<p>主机名存在etc&#x2F;hostname</p>
+<p>nmcli使用 </p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++nmcli device status（查看网卡）</span><br><span class="line">++nmcli connection show（查看配置）</span><br><span class="line">++nmcli connection modify （网卡）IPv4.addresses （IP地址/掩码）  该网卡的IP地址</span><br><span class="line">++nmcli connection up （网卡）激活网卡</span><br></pre></td></tr></table></figure>
+
+<p>ip add list（查看ip地址的信息）</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ospf的基础配置</title>
+    <url>/2022/08/28/ospf%E7%9A%84%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p><img src="/ospf/1.jpg"></p>
+<p>1、配置端口ip地址和网关，注意配置环回口loopback0</p>
+<p>例</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">**[R2]int loopba0[R2-LoopBack0]ip add 2.2.2.2 32**</span><br></pre></td></tr></table></figure>
+<p>2、配置 ospf</p>
+<p>配置过程中需要开启info en,用于查看报文<br>R1的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R1-ospf-1]ospf 1 router-id 1.1.1.1</span><br><span class="line">[R1-ospf-1]area 1</span><br><span class="line">[R1-ospf-1-area-0.0.0.0]network 1.1.1.1 0.0.0.0</span><br><span class="line">[R1-ospf-1-area-0.0.0.0]network 192.168.12.1 0.0.0.255</span><br><span class="line">[R1-ospf-1-area-0.0.0.1]network 192.168.1.254 0.0.0.255</span><br></pre></td></tr></table></figure>
+<p>R2的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R2-ospf-1]area 1</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]network 2.2.2.2 0.0.0.0</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]network 192.168.12.2 0.0.0.255</span><br><span class="line">[R2-ospf-1]area 0</span><br><span class="line">[R2-ospf-1-area-0.0.0.0]network 2.2.2.2 0.0.0.0</span><br></pre></td></tr></table></figure>
+<p>R3的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R3-ospf-1]area  0</span><br><span class="line">[R3-ospf-1-area-0.0.0.0]network 192.168.234.3 0.0.0.255</span><br><span class="line">[R3-ospf-1-area-0.0.0.0]network 3.3.3.3 0.0.0.0</span><br></pre></td></tr></table></figure>
+<p>R4的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R4]ospf 1 router-id 4.4.4.4</span><br><span class="line">[R4-ospf-1]area  0</span><br><span class="line">[R4-ospf-1-area-0.0.0.0]network 4.4.4.4 0.0.0.0</span><br><span class="line">[R4-ospf-1-area-0.0.0.0]network 192.168.234.4 0.0.0.255</span><br><span class="line">[R4-ospf-1]area 2</span><br><span class="line">[R4-ospf-1-area-0.0.0.2]network 192.168.45.4 0.0.0.25</span><br></pre></td></tr></table></figure>
+<p>R5的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R5]ospf 1 router-id 5.5.5.5</span><br><span class="line">[R5-ospf-1]area 2</span><br><span class="line">[R5-ospf-1-area-0.0.0.2]network 5.5.5.5 0.0.0.0</span><br><span class="line">[R5-ospf-1-area-0.0.0.2]network 192.168.45.5 0.0.0.255</span><br><span class="line">[R5-ospf-1-area-0.0.0.2]networ 192.168.2.254 0.0.0.255</span><br><span class="line">[R5-ospf-1-area-0.0.0.2]q</span><br></pre></td></tr></table></figure>
+<p>必须宣告到PC端的网关地址，否则报错目标不可达，且通往对方的路由端口能ping通，这样才能通过ospf学到对方的网段</p>
+<p>查看接口配置|查看路由表</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*[R1]dis ip interf brief</span><br><span class="line">[R1]dis ip routing-table*</span><br></pre></td></tr></table></figure>
+<p>查看通过的路径</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*&lt;R1&gt;tracert 192.168.2.1*</span><br></pre></td></tr></table></figure>
+<p>当两端配置完成后，ospf会形成收敛，从init-full的过程报文如下</p>
+<p><img src="/ospf/2.jpg"></p>
+<p>路由表</p>
+<p><img src="/ospf/3.png"></p>
+<p>区域进行MD5区域认证</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R5-ospf-1]area 2</span><br><span class="line">[R5-ospf-1-area-0.0.0.2]authentication-mode md5</span><br></pre></td></tr></table></figure>
+<p>接口密文认证</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R1]int g0/0/1</span><br><span class="line">*[R1-GigabitEthernet0/0/1]ospf authentication-mode simple cipher huawei*</span><br></pre></td></tr></table></figure>
+<p>配置R3为DR</p>
+<p>需要在端口模式下配置，255为最大优先级</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*[R3]int g0/0/1*  </span><br><span class="line">*[R3-GigabitEthernet0/0/1]ospf dr-priority 255*</span><br></pre></td></tr></table></figure>
+<p>查看路由表含ospf协议和根桥信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[R3]dis ip routing-table protocol ospf</span><br><span class="line">[R3]dis ospf peer</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>路由协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vim编辑器的基本操作</title>
+    <url>/2022/09/07/vim%E7%BC%96%E8%BE%91%E5%99%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/</url>
+    <content><![CDATA[<p>vim&#x2F;vi编辑器</p>
+<p>vi，visual interface，可视化界面，Unix&#x2F;linux系统中默认文件编辑器<br>vim vi improved，vi编辑器的强化版，由vim-enhanced软件包提供</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++使用vi/vim创建文件或者是修改文件。</span><br><span class="line">++vim的三种工作模式：命令模式，输入模式，编辑模式。</span><br><span class="line">++按i键可以从命令模式切换到输入模式</span><br><span class="line">++按esc键从输入模式切换到命令模式</span><br><span class="line">++按：可以从命令模式切换到编辑模式</span><br><span class="line">++在编辑模式下，常见的退出方式——：wq（保存并且退出），或者是：q！放弃保存并且退出（强制退出）</span><br></pre></td></tr></table></figure>
+
+<p>基本流程</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++vi/vim创建/修改文件</span><br><span class="line">vim 新文件名         //打开vi编辑器，并建立临时文件。</span><br><span class="line">#按i键切换输入模式，录入文本内容。</span><br><span class="line">按ESC，返回命令模式</span><br><span class="line">输入：键切换到编辑模式</span><br><span class="line">输入：wq保存退出编辑器。</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置autofs</title>
+    <url>/2022/09/10/autofus/</url>
+    <content><![CDATA[<p>本地文件系统：文档存放在本地连接的磁盘上<br>EXT4，XFS,SWAP</p>
+<p>网络文件系统：文档存放在局域网中的一台服务器的磁盘上的</p>
+<p>NFS :(network file system)</p>
+<p>samba共享：（windons共享）</p>
+<p>mount挂载（本地）：</p>
+<pre><code>  mount /dev/cdrom /mnt/dvd
+
+  mount /dev/sda1 /mnt/tdir
+</code></pre>
+<p>nfs客户端—</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">查看共享资源列表：showmount -e 目的主机（发现没法访问，原因是没有这个服务安装就好，yum install nfs-utlis）</span><br><span class="line">挂载nfs共享资源：mount 服务器地址：共享文件夹路径 /mnt/tdir </span><br></pre></td></tr></table></figure>
+
+<p>autofs：目的是为了实现自动挂载远程用户的主目录。</p>
+<p>服务包：yum -y install autofs</p>
+<p>如何配置</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1. vim /etc/auto.master   (设置监控点，编辑auto.amster文件)</span><br><span class="line">2. /rhome       /etc/rhome.rule（随便找个位置添加这个内容，保存退出）</span><br><span class="line">3. vim /etc/rhome.rule （配置挂载策略）</span><br><span class="line">4. ldapuser0（用户名称） -fstype=nfs,wxr（服务器的类型）   服务器的地址（rhome.rule进行编辑）</span><br><span class="line">最后启动服务：system enable autofs --now</span><br><span class="line">autofs触发后，五分钟过后，就会自动删除。</span><br><span class="line">如何查看是否挂载成功呃？</span><br><span class="line"></span><br><span class="line">ls /rhome/ldapuser0 (如果显示permission denied 那么表示你挂载成功，因为显示的是有目录但是没有权限)</span><br><span class="line">ls /rhome/ (确认结果)</span><br><span class="line">ldapuser0</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>yum源的配置和使用(RHLE8)</title>
+    <url>/2022/09/07/yum%E6%BA%90%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<p>yum install  net-tools（网络工具包），了解新工具DNF</p>
+<p>RHEL配置yum软件仓库。yum（黄狗升级器）</p>
+<p>客户机的配置文件：&#x2F;etc&#x2F;yum.conf   etc&#x2F;yum.repos.d&#x2F;*.repo</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[仓库1标识]</span><br><span class="line">[仓库1标识] #任意写，可以写BaseOs</span><br><span class="line">  name = 仓库描述（）</span><br><span class="line">  baseurl = 仓库的地址</span><br><span class="line">  enable = 1| 0（1是启动，0是关闭）</span><br><span class="line">  gpgcheck = 1|0（是否进行仓库检验）</span><br><span class="line">    #gpkey = 地址（仓库检测地址）</span><br><span class="line">如果有多个仓库，那么他的名字必须不一样的</span><br></pre></td></tr></table></figure>
+
+<p>yum repolist（查看仓库的列表）</p>
+<p>yum -y install bash-completion(命令行的自动补齐) net-tool(网络命令工具)，bind-utils（DNS查询工具包） vim-en（如果安装包没有出来，退出重新连接即可） </p>
+<p>yum的使用</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++ yum clean all                 //清除缓存</span><br><span class="line">++ yum repolist                  //列出可用的软件包</span><br><span class="line">++ yum install 【安装的软件包】     //安装软件，如果安装多个软件包 中间用空格分开；</span><br><span class="line">   ++ 比如：yum -y install bash-completion  net-tool bind-utils &#x27;vim-en*&#x27;（如果不知道软件包可以通过这种方式来操作）</span><br><span class="line">++ yum list   软件包              //列出软件包的安装情况，当然可以查询多个软件包</span><br><span class="line">   ++ yum list | less            //列出所有的包，通过分屏展示，如果是@app表示安装了，如果是yum库表示没有安装</span><br><span class="line">++yum info                       //查询这个软件包是用来干什么的</span><br><span class="line">++yum provides                   //查询这个命令是哪个软件包提供的</span><br><span class="line">   ++比如 yum provides */route    //查询route命令是哪个软件包提供的</span><br><span class="line">++yum -y remove 软件包            //卸载软件包，这个时候依赖包也会被卸载。</span><br><span class="line">++ yum -y reinstall 软件包        //重装软件包，（找回来丢失的文件回来）</span><br><span class="line">++ yum -y update 软件包           //升级软件包</span><br></pre></td></tr></table></figure>
+
+<p>查看yum源不能用的原因？ （扩展）</p>
+<p>1.yum源的问题？</p>
+<p>yum源的服务器的原因</p>
+<p>2.yum repolist这个命令查看yum库是否配置成功（yum库的配置要仔细仔细。）？</p>
+<p>3.配置网络的问题</p>
+<p>检查ip的命令IP add list（或者是装net-tool软件包使用ipconfig）</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SElinux的调试</title>
+    <url>/2022/09/07/SElinux/</url>
+    <content><![CDATA[<p>SElinux（Security-Enhanced linux）</p>
+<p>SELinux(Security-Enhanced Linux) 是<a href="https://baike.baidu.com/item/%E7%BE%8E%E5%9B%BD%E5%9B%BD%E5%AE%B6%E5%AE%89%E5%85%A8%E5%B1%80/300052?fromModule=lemma_inlink">美国国家安全局</a>（NSA）对于<a href="https://baike.baidu.com/item/%E5%BC%BA%E5%88%B6%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6/3617989?fromModule=lemma_inlink">强制访问控制</a>的实现，是 Linux历史上最杰出的新安全子系统。</p>
+<p>安全策略谁来提供？ NSA ，RedHat</p>
+<p>查看文件，进程安全的上下文：</p>
+<p>ls -Z</p>
+<p>ps -Z </p>
+<p>SElinux的三种模式，强制模式（enforcing），宽松模式（permissive），禁用模式（disabled）</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">#vi /etc/selinux/config</span><br><span class="line"></span><br><span class="line">SELINUX=permissive =====》重启后生效</span><br><span class="line"></span><br><span class="line">reboot 重启 </span><br></pre></td></tr></table></figure>
+
+<p>#setenforce 0|1（立即变成宽松模式|强制模式，这个是暂时更改模式）</p>
+<p> #getenforce 查看SElinux模式。</p>
+<p>SElinux的排错：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++# yum install setroubleshoot-sever     //安装SUlinux的排除工具。</span><br><span class="line">++#grep setrouble /var/log/messages      //会提示如何查看详细信息。</span><br><span class="line">++#sealert -l                            // 查看详细警告（根据提示排错）</span><br></pre></td></tr></table></figure>
+
+<p>web网站服务</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++用途：基于B/S架构通过网页服务端的程序</span><br><span class="line">++应用层协议：http（80）</span><br><span class="line">++软件包（B(客户端)）：firefox ，IE浏览器</span><br><span class="line">++软件包（S（服务端））：httpd</span><br><span class="line">++网页根目录：/var/www/html/</span><br><span class="line">++配置文件：/etc/httpd/conf/httpd.conf/【include基础配置例如端口】</span><br><span class="line">++/etc/httpd/conf.d/*.conf/(主要的配置)</span><br><span class="line">++默认的首页：index.html</span><br></pre></td></tr></table></figure>
+
+<p>如果web网站服务端口是82，启动不了的原因，或者无法访问。</p>
+<p>1.可能是SElinux是enforcing模式，更改模式为permissive就可以解决。</p>
+<p>2.通过，ls -lhd &#x2F;var&#x2F;www&#x2F;html 查看（网页的数据默认放在&#x2F;var&#x2F;www&#x2F;html&#x2F;）</p>
+<p>3.因为wed的理论的端口是80端口，而要求是82端口</p>
+<p>方案一</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++1.安装setroubleshoot-server</span><br><span class="line">++2.systemctl restart httpd</span><br><span class="line">++3.grep setrouble /var/log/messages     //根据提示查看详细错误。</span><br><span class="line">++4.sealert -l   //根据提示，排错</span><br></pre></td></tr></table></figure>
+
+<p>方案二 </p>
+<p>或者是使用SElinux管理工具（官方推荐）前提是安装setroublshoot</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">semange fcontext -l     //列出所以预设的安全上下文策略</span><br><span class="line">semange focntext -a -t  //添加文档的上下文策略</span><br><span class="line">semange focntext -d     //删除某个安全策略的上下文</span><br><span class="line">semange port -l         //列出所有预设的开发的端口号</span><br><span class="line">semange port -a -t      //添加某服务的端口开发策略</span><br><span class="line">semange port -d         //删除某个上下文策略</span><br><span class="line">比如：semange port -d http_port_p tcp 82(删除web上下文配置)</span><br></pre></td></tr></table></figure>
+
+<pre><code> ++semange port -a -t http_port_t -p tcp 82（允许web开放82端口）
+</code></pre>
+<p>这样就可以解决问题。</p>
+<p>4.无法访问服务的原因，前面如果都没有问题的情况下，可能就是防火墙的原因，所有说需要关闭防火墙</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sysetmctl stop firewalld(关闭防火墙)</span><br><span class="line">sysetmctl disable --now（立即关闭防火墙开机自启）</span><br></pre></td></tr></table></figure>
+
+<p>5.这个时候我们看到了redhat的测试页，而不是提供&#x2F;var&#x2F;www&#x2F;html&#x2F;的文件？</p>
+<p>因为httpd在启动的时候会自动生成一个index.html，但是RHLE 8在httpd的配置文件（&#x2F;etc&#x2F;httpd&#x2F;conf.d）的目录下面有一个wlcome.conf的文件，然后把wlcome.conf文件删除，重启就可以看到了。</p>
+<p>最后开机自启（重点）</p>
+<p>扩展：SElinux预设策略的开关控制：</p>
+<p>getsebool -a          &#x2F;&#x2F;列出所有策略的开关</p>
+<p>getsebool -p 策略 &#x3D; off 或者on（-p表示永久的）</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>交换机</title>
+    <url>/2022/08/21/%E4%BA%A4%E6%8D%A2%E6%9C%BA/</url>
+    <content><![CDATA[<p>1·交换机是通过学习连接的每个终端的 MAC 地址，将数据发送给对应的目的终端上，避免将数据发送到无关端口，提供网络利用率。这里说的交换机都是二层交换机。</p>
+<p>如果是没有学习到的 MAC 地址，或者想跟网段内所有终端进行通信，交换机会使用广播方式，将数据帧进行泛洪。</p>
+<p>2、交换机如何学习 MAC 地址？<br>交换机通过数据帧的源 MAC 地址，学习到交换机端口和 MAC 地址的对应关系，并记录到交换机的 MAC 地址表中。</p>
+<p>主机 A 向主机 D 发送数据：A 发送数据帧，数据帧的源 MAC 地址是 11:11:11:11:11:11 ，目的 MAC 地址是 44:44:44:44:44:44 。交换机端口 1 收到数据帧，记录源 MAC 地址和端口的对应到 MAC 地址表项。交换机不知道目的 MAC 地址在哪个端口，于是将数据帧进行泛洪，即转发到除端口 1 之外的所有端口。B 和 C 发现目的 MAC 地址不是自己，将丢弃数据帧。</p>
+<p><img src="/jhj/1.jpg" alt="header"></p>
+<p>D 发现是发送给自己的数据帧，于是发送应答数据帧，源 MAC 地址是 44:44:44:44:44:44 ，目的 MAC 地址是 11:11:11:11:11:11 。交换机端口 4 收到数据帧，记录 D 的 MAC 地址表项。于是交换机知道了主机 A 和主机 D 的 MAC 地址信息，之后会根据 MAC 地址表进行转发。交换机通过同样的方式，可以学习到主机 B 和主机 C 的 MAC 地址。</p>
+<p><img src="/jhj/1.jpg" alt="header"></p>
+<p>3、对比集线器，交换机有哪些优点？</p>
+<p><img src="/jhj/2.jpg" alt="header"></p>
+<p>7、以太网数据帧有哪些类型？</p>
+<p><img src="/jhj/3.jpg" alt="header"><br>4、交换机如何转发数据帧？<br>交换机收到数据帧后，会有三种处理方法：直通转发、碎片隔离和存储转发。</p>
+<p>直通转发<br>直通转发是交换机只读取数据帧的前 14 个字节就进行转发。由于读取的数据量固定，发送方和接收方的速度需要一致，导致无法桥接不同速率的以太网。另外，只读取前 14 个字节，会跳过了 FCS 域，因此无法检测并丢弃 CRC 校验错误的数据帧。</p>
+<p><img src="/jhj/4.jpg" alt="header"></p>
+<p>碎片隔离<br>碎片隔离是读取数据帧的前 64 个字节就进行转发，可以防止转发小于 64 字节的残帧。但是如果出现 CRC 错误，还是会转发数据帧。也无法桥接不同速率的以太网。</p>
+<p><img src="/jhj/5.jpg" alt="header"></p>
+<p>存储转发<br>存在转发会读取数据帧全部内容再进行转发。这样就可以识别残帧和 CRC 校验错误帧，并将它们丢弃。交换机还能对数据帧进行缓存，因此可以桥接不同速率的以太网。</p>
+<p>5、单工和双工通信有什么区别？</p>
+<p><img src="/jhj/6.jpg" alt="header"></p>
+<p>6、交换机的处理能力的指标是什么？<br>交换机的处理能力也叫做背板容量或交换机容量。容量单位是 bit&#x2F;s（比特每秒），值越大，说明交换机在单位时间内传输的数据越多。</p>
+<p>当交换机的所有端口的总带宽小于交换机的容量时，交换结构为非阻塞，即带宽充裕，没有等待处理的情况。反之，当所有端口总带宽超过交换机的容量时，叫做交换机结构过载。</p>
+<p>交换机是千兆端口时，处理能力达到端口数 × 2 × 1Gbit&#x2F;s 的数值，就是非阻塞。其中 × 2 表示上行和下行都是 1Gbit&#x2F;s 的全双工通信。假如交换机有 24 个端口，背板容量到达 24 × 2 × 1G &#x3D; 48Gbit&#x2F;s ，就是非阻塞。</p>
+<p>7、根据功能分类，交换机有几种类型？<br>交换机按照功能可以分为二层交换机和三层交换机。</p>
+<p>二层交换机<br>没有 IP 路由功能、仅处理数据链路层的交换机叫做二层交换机。二层交换机根据不同的功能而不同。</p>
+<p><img src="/jhj/7.jpg" alt="header"></p>
+<p>三层交换机<br>带有 IP 路由功能的交换机叫做三层交换机。</p>
+<p>8、根据外形分类，交换机有几种类型？<br>根据外形，交换机可分为桌面式交换机、箱式交换机和机框式交换机。</p>
+<p>桌面式交换机<br>桌面式交换机是指放在桌面上使用的交换机。它体积不大，只能连接几台网络设备，通常用于家庭网络中，主要有 3 端口、5 端口、8 端口和 16 端口的产品。</p>
+<p>桌面式交换机通常不安装风扇，采用无风扇设计，运行噪声小。</p>
+<p>箱式交换机<br>箱式交换机通常高度是 1U 或 2U ，可以安装在 19 英寸的机柜内。通常采用金属外壳、内置电源，并配置冷却风扇。下行有 24 千兆网口或 48 千兆网口，上行有 2 万兆光口或 4 万兆光口的配置较多。下行使用 RJ-45 的网线接口，上行使用 SFP+ 槽进行连接。<br>主要作为企业中作为接入交换机使用，支持电源冗余。<br><img src="/jhj/8.jpg" alt="header"><br>框式交换机<br>框式交换机是指在机框内组合多个接口模块的交换机。可以根据需要选择端口数量和不同类型的接口模块，扩展性好，端口数量多。</p>
+<p><img src="/jhj/9.jpg" alt="header"></p>
+<p>在机框中可以添加电源、风扇等组成部分，再插入管理模块和接口模块。接口模块和管理模块叫做线卡。机框上总线的主板叫做背板，可以插入线卡。</p>
+<p>9、根据用途分类，交换机有几种类型？<br>根据交换机在网络中的位置和用途，可分为三类：核心交换机（核心层）、汇聚交换机（汇聚层）和接入交换机（接入层）。</p>
+<p><img src="/jhj/10.jpg" alt="header"><br><img src="/jhj/11.jpg" alt="header"><br>10、交换机有几种端口类型？<br>选择交换机时，需要根据实际的使用需求，以及具体的端口类型、端口数量和设备性能等参数，决定购买哪款交换机。</p>
+<p>千兆以太网端口<br>大部分交换机都配置了 RJ-45 的千兆以太网接口，连接千兆接口要使用增强型 5 类双绞线。通过自适应功能，还可以连接百兆接口。</p>
+<p>光纤端口<br>箱式交换机会配置光纤端口，主要是用于连接上行链路。为了连接万兆以太网的上行链路，通常会搭载 SFP+ 接口。</p>
+<p>框式交换机中，一般会配置多个千兆以太网 SFP 或万兆以太网 SFP+ 接口的接口卡。</p>
+<p>PoE 端口<br>接入交换机还会配 PoE 端口。Poe 端口使用网线连接 IP电话或无线 AP ，并通过网线对设备进行供电。</p>
+<p>为了让 IP 电话或无线 AP 无需外接电源也能接入网络，通过一根网线给设备供电的技术就是 PoE 技术。PoE 技术有简化布线、节省人工成本，管理方便，使用灵活，安全等优点，得到广泛的应用。</p>
+<p>PoE 技术作为 IEEE <a href="http://802.af/">802.af</a> 在 2003 年完成了标准化工作，这个技术还用于网络摄像头、POS 终端等连接以太网的硬件设备。</p>
+<p>PoE（ IEEE 802.3af ） PoE+（ IEEE 802.3at ）PoE++（ IEEE 802.3bt ）<br>PoE 的供电标准是 IEEE 802.3af ，最大能提供 15.4W 的功率，可以为 IP 电话、无线 AP 等终端设备供电。 PoE+ 是 PoE 的增强版，供电标准是 IEEE 802.3at ，最大能提供 30W 的功率，可以为视频电话、 摄像机等终端设备供电。 PoE++ 是 PoE+ 的增强版，供电标准是 IEEE 802.3bt ，最大能够提供 60W 的功率，能够满足更多的终端功率需求，可以为基站、室外热感摄像机等终端设备提供更大功率的供电。</p>
+<p><img src="/jhj/12.jpg" alt="header"></p>
+<p>支持 PoE 功能的交换机，会说明每个端口最大支持 ×× W ，设备最大供电 ×× W 等电能信息，可以算出交换机最多可接入的 PoE 设备数量。</p>
+<p><img src="/jhj/13.jpg" alt="header"></p>
+<p>上行链路端口<br>接入交换机和汇聚交换机要集中下行连接的所有设备流量，并将流量传输到上行的网关或核心交换机中，向网关、核心交换机传输流量的端口叫做上行链路端口，反向就叫做下行链路端口。在箱式交换机中一般会配置 2~4 个万兆上行链路端口。</p>
+<p><img src="/jhj/14.jpg" alt="header"><br>下行链路端口<br>通常下行链路是 RJ-45 的接口，也有使用光纤接口的。一台交换机或一块板块，能提供 24 或 48 个接口。</p>
+<p><img src="/jhj/15.jpg" alt="header"><br>交换机堆叠<br>通过堆叠线缆可以把多台交换机连接起来，成为逻辑上的一台交换机。</p>
+<p>11、交换机有哪些功能？<br>交换机的完整功能说明，可以查看官网的产品文档，里面进行了详细的描述。</p>
+<p>MAC 地址数<br>MAC 地址数是指一台交换机最大可以学习到的 MAC 地址表数量。</p>
+<p>生成树功能<br>为了避免二层环路，我们使用生成树协议（ STP ），让交换机知道对方的存在，具体做法是在交换机之间交换 BPDU 数据帧。详情可看《图解 STP 》和《图解 RSTP 和 MSTP 》。</p>
+<p>链路聚合<br>链路聚合是将交换机的多条线路汇聚成一条逻辑线路在网络中使用。有多个称呼：端口聚合、链路捆绑、绑定等。</p>
+<p>如果不使用链路聚合功能，直接将交换机的多个物理端口连接起来，可能会导致网络环路。如果使用生成树协议，又会避开某些链路，导致只有一条物理链路可用。如果使用链路聚合，把几条物理链路聚合成一条逻辑链路，即使某一条物理链路断开，由于逻辑线路还有其它物理链路在维持，因此通信也不会中断，到达线路冗余的效果。</p>
+<p>VLAN<br>将广播域分割成一个个逻辑网段的功能叫做 VLAN 。</p>
+<p>端口镜像<br>将某个端口接收和发送的数据帧复制到镜像端口的功能叫做端口镜像，被复制的源端口叫做监控端口。</p>
+<p>为了分析网络故障或检测网络中的流量，交换机会将收到的数据帧复制一份并转发到网络分析设备或流量监控设备中。</p>
+<p>QoS 优先级队列<br>QoS 是 Quality of Service 的缩写，也叫做服务质量。当数据通过网络设备时，根据通信种类控制通信优先级和带宽的功能。通常是将声音、视频等数据定义为高优先级，高优先数据优先处理，保障这类数据的稳定和低延迟。</p>
+<p>除了交换机在二层进行的 QoS 控制外，还有路由器和三层交换机的三层（ IP ）的 QoS 控制，以及 TCP 进行的四层的 QoS 控制。</p>
+<p>IEEE 802.1p 标准完成了对二层的 QoS 优先级控制的标准化工作。通过 3bit 长度的优先级控制信息，定义了从 0 到 7 的 8 个优先级，即 CoS 值（服务等级值），交换机会优先转发值大的数据帧。</p>
+<p>MAC 地址过滤<br>为了网络安全，只让指定的设备接入网络。二层交换机提供了以数据帧的头部信息进行过滤的功能。具体过程是，先设置一个过滤条件，比如目的 MAC 地址、源 MAC 地址等，满足条件的数据帧通过，阻断不满足条件的数据帧。</p>
+<p>考虑到伪造 MAC 地址的情况发生，还可以跟 802.1X 一起使用。三层交换机或路由器可以根据 IP 头部信息完成 IP 通信过滤的功能。</p>
+<p>基于端口的认证<br>在交换机中，只有通过认证的客户端才能使用有线端口。这个功能由 IEEE 802.1X 完成标准化，对接入 LAN 的客户端进行认证的机制。</p>
+<p>当 PC 连接交换机时，认证过程启动。根据发送方的 MAC 地址信息进行客户端识别，通过用户名、口令或证书等认证信息进行用户认证。对于没有认证的客户端发来的数据帧，交换机只接收包含认证信息的数据帧，其余的全部丢弃。对于认证失败的客户端发来的数据帧，交换机就直接丢弃不会进行转发。<br><img src="/jhj/16.jpg" alt="header"><br>要使用基于端口的认证功能，客户端的电脑和交换机都要支持 802.1X 认证功能，缺一不可。</p>
+<p>802.1X 认证中使用 PPP 的扩展协议 EAP ，通过 EAPOL 协议封装 EAP 认证消息，然后在 LAN 中进行传输。认证结束之前，客户端电脑只能进行 EAPOL 通信。</p>
+<p><img src="/jhj/17.jpg" alt="header"></p>
+<p>网络管理<br>远程管理、监控和配置网络设备可以使用 SNMP 协议。SNMP 协议可以对整个网络结构内的交换机和其它网络设备进行集中统一的管理。</p>
+<p>被 SNMP 管理的网络设备叫做 Agent ，管理网络的设备叫做 Manager 。</p>
+<p>12、交换机的架构是由什么组成？<br>交换机的基本架构是由 RJ-45 接口、PHY 、MAC 等模块的 NIC 和管理由 NIC 收发帧缓存、转发表的软件组成，通过查看转发表信息，在 NIC 之间进行数据帧交互。</p>
+<p><img src="/jhj/18.jpg" alt="header"></p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>网络设备</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>什么是DNS，DNS的作用？</title>
+    <url>/2022/08/28/%E4%BB%80%E4%B9%88%E6%98%AFDNS%EF%BC%8CDNS%E7%9A%84%E4%BD%9C%E7%94%A8%EF%BC%9F/</url>
+    <content><![CDATA[<p>什么是dns？<br>DNS（Domain Name System，域名系统），因特网上作为域名和IP地址互相映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。通过主机名，最终得到该主机对应的IP地址的过程叫做域名解析（或主机名解析）。DNS协议运行在UDP协议之上，使用端口号53<br>DNS是来做什么？<br>正向解析：根据主机名称（域名）查找对应的IP地址<br>反向解析：根据IP地址查找对应的主机域名<br><img src="/dns/2.jpg" alt="header"><br>DNS 的A记录什么？ NS记录什么？ SOA记录是什么？<br>1.A（Address）记录是用来指定主机名（或域名）对应的IP地址记录。<br>2.NS记录是域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析<br>3.SOA 这种记录是所有区域性文件中的强制性记录。</p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>DNS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>文档的权限与归属</title>
+    <url>/2022/09/08/%E6%96%87%E6%A1%A3%E7%9A%84%E6%9D%83%E9%99%90%E4%B8%8E%E5%BD%92%E5%B1%9E/</url>
+    <content><![CDATA[<p>文档的归属关系</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">属主（user）：这个文件是属于那个用户的</span><br><span class="line">属组（group）：这个文件是属于那个组的</span><br><span class="line">其他人（other）：除了属主，属组以外的任意用户</span><br><span class="line">所有人（all）：所有人</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>权限的类别</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">基本权限：R，W，X（针对属组，属主，所有人其他人）</span><br><span class="line">对于文件而言：</span><br><span class="line">读取：R read ===》cat ，less，more，head，tail...</span><br><span class="line">修改：write ====&gt; vi,vim,gpedit,&gt;,&gt;&gt;,..... </span><br><span class="line">执行;execute======》是否能运行</span><br><span class="line">对于目录而言：</span><br><span class="line">读取：R read ===》ls</span><br><span class="line">修改：write ====&gt; mv, cp,touch,rm,chmod，mkdir</span><br><span class="line">执行;execute======》cd 能否进入该目录</span><br><span class="line">特点：只要对这个目录有W权限，那么就可以删除下面的任何文件。</span><br></pre></td></tr></table></figure>
+
+<p>设置文档的归属</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">chown -r 属主 文档  //改变文档用户所有权</span><br><span class="line">chown -r 属组 文档  //改变文档组所有权</span><br><span class="line">chown -r 其他人 文档   //改变文档其他人所有权</span><br><span class="line">比如：[root@red]# ls -lh  /etc/passwd</span><br><span class="line">-rw-（属主权限）r--（属组权限）r--（其他人权限）. 2 root（属主） root（属组） 1.5K May 10 23 23：43 /etc/passwd（文件）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>chown命令只会更改目录的所有权，不会更改目录下文件的所有权，如果要更改的话就需要加 shown-R。</p>
+<p>如果不想改归属关系，改权限怎么办？</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">通过chmod命令该权限</span><br><span class="line">chmod u=/+/-权限 文档   /改变文档用户权限</span><br><span class="line">chmod g=/+/-权限 文档    /改变文档属组的权限</span><br><span class="line">chmod o=/+/-权限 文档    /改变文档所有人的权限</span><br><span class="line">比如：[lisi@red]#chmod -R u=rwx,g=rwx,o=rwx /etc/passwd</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如果other要区分其他权限：</p>
+<p>访问控制列表：ACL（针对个别的用户&#x2F;组设置独立的权限）</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">getfacl                               //查看文件有没有额外的acl</span><br><span class="line">setfacl -m user:用户名:权限组合 文档     //该特殊用户给特殊权限</span><br><span class="line">setfacl -m group: 组名:权限组合 文档     //该特殊组给特殊权限</span><br><span class="line">setfacl -b  user/group:权限 文档            //该特殊组/用户删除特殊权限</span><br><span class="line">比如：[lisi@red]#setfacl -m user:lisi:wx /etc/passwd</span><br><span class="line">如果是目录的可以通过-R递进</span><br></pre></td></tr></table></figure>
+
+<p>附加题：</p>
+<p>附加权限</p>
+<p>set uid:附加到属主的x位上面，变成s（任何人在执行这个程序的时候，自动拥有这个程序的所有者的权限）</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">例如：[lisi@red]#ls -lh /usr/bin/passwd </span><br><span class="line">-rwsr-xr-x. 1 root root 34K May 2018 /usr/bin/passwd </span><br><span class="line">这个s是可以根据chmod命令来更改的</span><br><span class="line">chmod u-s /usr/bin/passwd ,那么普通用户就不能通过passwd命令更改密码。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>2.set get附加到属组上的x位上，变成s（任何人在执行这个程序的时候，自动拥有这个程序的所有组的权限）在下面创建的文件都属于这个组。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">比如：</span><br><span class="line">mkdir tools （创建目录home/tools）</span><br><span class="line">chown -r :admins /home/tools (更改文件的所有权)</span><br><span class="line">chmod g+rwx,o-rwx /home/tools/（给组添加wxr的权限，删除其他人的rwx的权限）</span><br><span class="line">chmod g+s /home/tools/ （给组添加s的附属权限）</span><br><span class="line">touch /home/tools/admins.txt （在/home/tools/目录下创建测试文件）</span><br><span class="line">ls -lhd /home/tools/admins.txt（查看测试文件的权限） </span><br></pre></td></tr></table></figure>
+
+<p>3.粘滞位，可以写，可以创建，但是不能删除，附加到属组上的x位上，变成t</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">例如：</span><br><span class="line">ls -lhd /var/tmp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>权限的数字标识：r &#x3D;4 ，w&#x3D;2 ，x&#x3D;1，</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>公司面试</title>
+    <url>/2022/08/19/%E5%85%AC%E5%8F%B8%E9%9D%A2%E8%AF%95/</url>
+    <content><![CDATA[<p>1，NAT作用。<br>答，主要作用解决IPV4地址不够的问题。  NAT分 源NAT 、目的NAT、双向NAT.<br>源NAT作用：转换源IP，一般将内网的私网IP转换成公网IP , 让内网用户 可以访问 公网。<br>目的NAT （又叫端口映射）作用：转换目的IP。将内网服务器端口映射到公网,让公网用户能够访问内网的服务器。<br>双向NAT:  源IP和目的IP同时发生转换。 主要解决内网用户 通过 域名 或 公网IP 访问内网服务器。</p>
+<p>2，STP 的作用和 原理（如何解决环路）<br>作用：防止 数据链路层 发生环路。<br>原理：通过交换机之间相互发送BPDU选举： 根桥、根端口、指定端口。 非根端口非指定端口 阻塞。从而解决环路问题。</p>
+<p>⦁	vlan 的作用。<br>答：vlan 叫虚拟局域网，将一个大的局域网划分成多个小的局域网。可以减少广播的范围，节省带宽，方便管理、提高内网的安全性。</p>
+<p>⦁	vlan的接口类型。<br>答：思科：access 、trunk    华为、华三：access 、trunk、Hybrid</p>
+<p>5，access 和trunk的区别<br>access: 收到数据–会添加 含vlan id 的标签，发送数据–移除标签转发 。数据vlan id和标签id不一致，会丢掉<br>       连接电脑用access类型,  它也可以用于交换机互联：两个交换机都是access类型就可以连接。它只能发送一个vlan的数据<br>trunk: 携带标vlan签转发数据，所以一般用于发送多个vlan 的数据。只用于交换机连接交换机。</p>
+<p>6，TCP和UDP区别</p>
+<p>tcp常见协议：http、ftp、https、telnet、ssh、pop3、smtp、rdp<br>udp常见协议： tftp、dns、dhcp、QQ、snmp、radius、NTP 一般用于传输视频、音频。</p>
+<p>7，电脑访问不了外网的检测步骤 （综合题，没得统一答案。 造成不能上网的问题很多，主要从如下入手）<br>⦁	查看网卡状态，确定网线是否掉线，水晶头是否有问题 （物理层）<br>⦁	ping 一下网关 ，然后输入arp -a 能否发现网关的MAC地址  （数据链路层）<br>⦁	查看IP地址，确定是否DHCP获取IP地址，获取的IP地址是否正确 （网络层）<br>⦁	ping 公网dns： 114.114.114.114  或者 61.139.2.69   是否能通 （网络层）<br>⦁	如果ping不通DNS，就tracert 地址跟踪 61.139.2.69 &#x2F;  114.114.114.114  确认哪里掉包。（网络层）<br>⦁	检查掉包那个设备以及附近设备的路由、策略、安全策略。（网络层）<br>E， 如果ping通DNS，查看能否登录QQ，能否打开网页，能否登录微信（检查应用层）<br>⦁	检查防火墙是否拦截响应的应用。—–最快捷的方式是关闭防火墙。</p>
+<p>8，电脑上QQ和微信都能正常上网，但是打开浏览器无法访问网络的原因<br>答： 电脑没设置DNS ，或者DNS被防火墙等安全设备拦截了。</p>
+<p>深信服部分<br>⦁	AF部署模式  以及应用场景。<br>答：路由—内网出口，一般相当于路由器。物理接口设置为三层接口<br>       透明—内网出口有路由器，客户不想换，部署在路由器和交换机之间。<br>防火墙专门保护服务器，部署在核心交换机和服务器交换机之间<br> 物理接口设置为二层接口<br>虚拟网线模式—防火墙的网口也是二层接口，因为网口是成对的，转发数据不看mac表，转发速度比透明快<br>混合—客户现场既需要防火墙提供二层功能，又需要提供三层功能。<br>防火墙既有二层接口，又有三层接口<br>     旁路—客户不想更改现有网络环境，又想防火墙提供安全保护。旁路模式不能拦截UDP协议的应用。</p>
+<p>⦁	防火墙有几种？</p>
+<p>最简单可以答分两种—–软件防火墙 和 硬件防火墙</p>
+<p>最佳： IPS(入侵防御)、IDS(入侵检测)、AV（防毒墙）、waf(web防火墙)、NGAF(下一代防火墙，简称AF)<br>       UTM（多合一网关）&#x3D;&#x3D;一个设备实现IPS、IDS、WAF、AV上面所有功能。</p>
+<p>⦁	VPN分类：<br>二层（数据链路层）：L2TP、PPTP        网络层：ipsec vpn、 GRE vpn、 MPLS VPN<br>传输层：sangfor vpn         应用层：SSL VPN </p>
+<p>L2TP、PPTP、SSL VPN 主要是实现 出差或在家办公的员工  访问公司内网的服务器。<br>ipsec 、GRE、sangfor  主要是实现 不同地方的两个或者多个局域网 互联互通。<br>MPLS VPN 是运营商的VPN 。主要是大型公司跨地域 互联互通。</p>
+<p>4，深信服常见VPN<br>sangfor vpn 、SSL VPN 、ipsec vpn</p>
+<p>⦁	审计QQ内容 的实现步骤。见实验手册<br>⦁	13.0版本前 建立准入策略 。13.0版本后是终端审计策略。<br> 2，用户上网会 重定向到 安装准入客户端的页面。<br>⦁	客户安装准入客户端后，能够上网了。  4，准入客户端会将保存在电脑本地的聊天记录发送到AC<br>为什么用审计策略不行。— 因为QQ发送的数据是加密的，AC破解不了。</p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>归档与压缩</title>
+    <url>/2022/09/10/%E5%BD%92%E6%A1%A3%E4%B8%8E%E5%8E%8B%E7%BC%A9/</url>
+    <content><![CDATA[<p>归档:把多个文件归纳在一起tar。</p>
+<p>压缩：减小文件占用空间的大小。 gzip，bzip，xz</p>
+<p>tar的命令</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">tar -c 创建新文档</span><br><span class="line">tar -x  释放备份文档</span><br><span class="line">tar -f   指定文档名称</span><br><span class="line">tar -z    处理.gz格式</span><br><span class="line">tar -i    处理.bz2格式</span><br><span class="line">tar -j     处理.xz格式</span><br><span class="line">tar -t     查看归档</span><br><span class="line">tar -v      查看执行的详细信息</span><br><span class="line">tar -P       保留原来路径</span><br><span class="line">tar -p        保留权限</span><br><span class="line">tar -cvPp -f backup.tar  /usr/loca（如果加P的话，那么释放的话就能回到原来的位置）    </span><br><span class="line">比如：tar -c -f new.tar anac.cfg fig fig2 (创建一个归档)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>gzip压缩文件，如果压缩过后原来的文件就会被删除。</p>
+<p>gzip 文件（压缩文件）</p>
+<p>gunzip 文件 （解压）</p>
+<p>记住默认情况下，bzip2，xzip的软件是没有安装的</p>
+<p>验证压缩是否为规定的压缩格式。</p>
+<p>file 文件名 进行查看文件类型。</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>服务控制与安全开关(RHLE8)</title>
+    <url>/2022/09/07/%E6%9C%8D%E5%8A%A1%E6%8E%A7%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E5%BC%80%E5%85%B3/</url>
+    <content><![CDATA[<p>systemctl服务控制</p>
+<p>  系统控制器，用来管理linux系统的开机&#x2F;关机&#x2F;服务资源运行状态</p>
+<p>  直接执行systemctl列出可以管理的系统资源，包括各种各样的系统服务</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++控制当前的状态 systemctl start（启动）/stop(停止)/resart(重启)/status(状态)  服务名</span><br><span class="line">++sysemctl is-enabled 服务名 正在运行的</span><br><span class="line">++ systemctl is-active 服务名 </span><br><span class="line">++控制服务开机自启状态：systemctl enable | disable 服务名.... [-now]</span><br></pre></td></tr></table></figure>
+
+<p>firewalld，sElinux安全开关</p>
+<p> 防火墙的状态的控制：systemctl disable fallwolld -now（立即关闭，关闭开机自启）</p>
+<p>  防火墙的作用，内核的一套网络保护机制，通过firewalld服务来控制。</p>
+<p>++SElinux的作用：内核的一套系统保护机制，通过内核启动参数或者是启动配置控制。</p>
+<pre><code>++如何关闭SElinux机制（三种状态———Enforcing（强制保护） permissive（宽松模式） disabled（禁用））
+</code></pre>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">#vi /etc/selinux/config</span><br><span class="line">SELINUX=permissive =====》重启后生效</span><br><span class="line"></span><br><span class="line">#reboot 重启 </span><br></pre></td></tr></table></figure>
+
+<p> #setenforce 0|1             &#x2F;&#x2F;立即变成宽松模式|强制模式</p>
+<p> #getenforce                  &#x2F;&#x2F;查看SElinux的状态。</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>计划任务（RHLE 8 ）</title>
+    <url>/2022/09/08/%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1%EF%BC%88RHLE-8-%EF%BC%89/</url>
+    <content><![CDATA[<p>什么是计划任务:按照计划的时间执行计划的任务。</p>
+<p>是通过这个crond服务来实现。</p>
+<p>配置文件：&#x2F;etc&#x2F;crontab     &#x2F;var&#x2F;spool&#x2F;cron&#x2F;用户名</p>
+<p>配置记录格式</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">分 时 日 月 星期 用户 任务操作命令（用绝对目录，必要时输出）</span><br><span class="line">时刻表示方式：</span><br><span class="line">5-10（时间范围）</span><br><span class="line">*/5(每隔3分钟执行一次)</span><br><span class="line">5,7,9()</span><br><span class="line">1-15/3（从1到15每隔三天操作一次）          </span><br></pre></td></tr></table></figure>
+
+<p>配置计划任务工具</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">crontab -e -u 用户 （编辑用户的计划任务）</span><br><span class="line">crontab -l -u 用户（查看计划任务）</span><br><span class="line">vim  /var/spool/cron/用户名（进行添加计划任务就可以了时间加任务）</span><br><span class="line">tali /var/log/crontab</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>查找文件（find）</title>
+    <url>/2022/09/10/%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6%EF%BC%88find%EF%BC%89/</url>
+    <content><![CDATA[<p>find（查找）</p>
+<p>find [目录范围] 【查找条件】-a [条件]（-a是and，两个条件同时满足）</p>
+<p> find [目录范围] 【查找条件】-o [条件]（-o是other，两个条件满足一个就行）</p>
+<p>直接敲find就是把文件下面的所有的文件。</p>
+<p>find常用的条件</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.-size（按文件的大小）</span><br><span class="line">2.-name（按文档名称）</span><br><span class="line">3.-type（按文件类型 （f(文件)，d(目录),l(链接),b(快设备),c(字符文件) ））</span><br><span class="line">4.-user （所属用户）</span><br><span class="line">5.-group （所属组）</span><br><span class="line">6.-mtime（按修改时间）</span><br><span class="line">处理find查找结果：</span><br><span class="line"> -exec 命令行 &#123;&#125; \;（嵌入｛｝查找结果）</span><br><span class="line"> 修改文件的时间</span><br><span class="line"> touch -d &#x27;2020-12-11 12:30&#x27; f2.txt</span><br><span class="line"> 比如：find /dev -type b(查看dev目录下的快设备)</span><br><span class="line"> find /dev -type b -exec ls -lhd &#123;&#125; \;</span><br></pre></td></tr></table></figure>
+
+<p>grep命令查找文件内容</p>
+<p>grep 127(查找的内容) &#x2F;etc&#x2F;host（文件）</p>
+<p>ipconfig ens160 | grep ip (命令行运行的结果，通过grep进行过滤)</p>
+<p>grep的选项；</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">grep -v 查找内容（反向的过滤内容后的文件，条件取反）</span><br><span class="line">grep -o 查找内容（onlymatch，查找内容在这个文件出现了多少次）</span><br><span class="line">grep sbin /etc/man_db.conf &gt; /root/out.txt(把etc/man_db.conf符合条件的内容存在文件中</span><br><span class="line">一个&gt;表示原来文件内容进行覆盖，&gt;&gt;表示原来的文件进行添加)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置系统调优(RHLE 8 )</title>
+    <url>/2022/09/07/%E9%85%8D%E7%BD%AE%E7%B3%BB%E7%BB%9F%E8%B0%83%E4%BC%98/</url>
+    <content><![CDATA[<p>RHLE8的系统调优：</p>
+<p>一般情况下，系统调试在vim &#x2F;proc&#x2F;sysctl.conf比较复杂，所以RHLE 8提供比较方便调试软件包tuned。tuned提供了大量的优化方案，我们只有应用就可以了。</p>
+<p>管理工具：tuned-adm</p>
+<p>服务名：tuned</p>
+<p>要求是，为你的系统选择建议的tuned配置集并将他设置为默认设置。</p>
+<p>配置目录：&#x2F;etc&#x2F;tuned  ,   &#x2F;usr&#x2F;lib&#x2F;tuned&#x2F;优化方案&#x2F;</p>
+<p>tuned-adm按回车，这个时候会有提示：</p>
+<p>  ++tuned-adm list                                &#x2F;&#x2F;列出可以使用的优化方案</p>
+<p>  ++tuned-adm recommend                 &#x2F;&#x2F;查看系统推荐的方案</p>
+<p>  ++tuned-adm profile 《方案名称》     &#x2F;&#x2F; 切换为xx优化方案</p>
+<p>  ++tuned-adm active                           &#x2F;&#x2F;查看当前活动方案</p>
+<p>  ++ tuned-adm off                               &#x2F;&#x2F;关闭调优方案</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">考试时</span><br><span class="line">[root@ered~]#tuned-adm recommend  查看系统推荐方案</span><br><span class="line">virtual-guest</span><br><span class="line">[root@ered~]# tuned profile virtual-guest</span><br><span class="line">[root@ered~]# tuned-adm active</span><br><span class="line">Current active profile:virtual-guest</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>重置root密码</title>
+    <url>/2022/09/10/%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<p>如何拿到管理员权限：</p>
+<p>1.如何不通过密码进入系统</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">开机过程中，修改启动参数，绕过密码验证，获得根分区控制权限</span><br><span class="line">RHLE 5/6：kernel 。。。。 single，回车确认后按b键启动。</span><br><span class="line">RHLE 7/8：按两下e键，修改linux行（ro改rw，末尾添加rd.break(告诉linux内核，不要找我要密码)），然后按ctrl+x 键启动</span><br><span class="line">这样就可以进系统了</span><br></pre></td></tr></table></figure>
+
+<p>2.如何设置密码</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Recovery模式的根系统目录：chroot /sysroot/(从临时环境切换到根系统)</span><br><span class="line">echo 123456 | passwd --stdin root       (设置密码)     </span><br><span class="line">SElinux机制的安全标签</span><br><span class="line">touch /.autorelabel====&gt;通知系统下次开机时重新标记SElinux安全上下文。</span><br><span class="line">exit</span><br><span class="line">reboot（重启就好）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>scp 命令（远程复制）</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>账号管理  (RHLE 8)</title>
+    <url>/2022/09/08/%E8%B4%A6%E5%8F%B7%E7%AE%A1%E7%90%86-RHLE-8/</url>
+    <content><![CDATA[<p>如何控制文件的访问——who（归属） ，有什么权限（r,w,x）</p>
+<p>用户账户：登陆系统，控制访问权限 &#x3D;&#x3D;&#x3D;》&#x2F;etc&#x2F;{passwd,shadow（passwd影子文件）}</p>
+<p>组账号：控制访问权限 &#x3D;&#x3D;》&#x2F;etc&#x2F;{group,gshadrw（group的影子文件）}</p>
+<p>useradd [-u UID] [-g 基本组] [-G 附加组] [-d 家目录] [-s不能登陆shell] 用户名字   &#x3D;&#x3D;&#x3D;》添加用户</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">比如：useradd -u 666 -g myname -G waibu -d home -s lisi</span><br><span class="line">(建立一个uid是666基本组是myname，附加组是waibu家目录是home，不能登陆shell的用户lisi)  </span><br><span class="line">useradd -s/sbin/nologin lisi(没有可以交行shell)</span><br><span class="line">注意：“用户名不能用数字”</span><br></pre></td></tr></table></figure>
+
+<p>passwd 用户名                 &#x3D;&#x3D;》设置密码</p>
+<p>echo 密码 | passwd —stdin [用户名]（通过管道符，设置密码。）</p>
+<p>userdel -r 用户名             &#x3D;&#x3D;》删除用户账号</p>
+<p>usermod [-u UID] [-d 家目录] [-s 登陆shell] 用户名    &#x3D;&#x3D;&#x3D;&#x3D;&gt;更改用户属性</p>
+<p>UID&lt;1000,那么是系统用户，UID&gt;1000是普通用户。</p>
+<p>id 用户名（查看用户账号）</p>
+<p>基本组[私有组]:每一个账号所属于的最主要的组（通常这个组只有一个用户，默认的组的名字是用户名）</p>
+<p>附加组（公共组，从属组）：每一个账户除了基本组以外，还属于的其他组。</p>
+<p>组账户的管理：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">groupadd 组名                             //添加组账户</span><br><span class="line">groupdel 组名                             //删除组账户</span><br><span class="line">gpasswd -a 用户名 组名                     //把用户添加到组账户</span><br><span class="line">gpasswd -d 用户名 组名                     //删除组账户的用户</span><br><span class="line">groups                                   //查看组账户</span><br><span class="line">usermod -a -G                            //改用户添加组，不影响原来的组</span><br></pre></td></tr></table></figure>
+
+<p>默认的组有：user，root</p>
+<p>用户的切换</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">su - 用户名                               //切换到某用户</span><br><span class="line">su -用户名 -c &#x27;命令&#x27;                       //使用某用户运行命令</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>传统的防火墙部署</title>
+    <url>/2022/08/22/%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E9%83%A8%E7%BD%B2/</url>
+    <content><![CDATA[<p>传统的防火墙包括（ IPS(入侵防御)、IDS(入侵检测)、AV（防毒墙）、waf(web防火墙)）</p>
+<p>NGFW（下一代防火墙）</p>
+<p>防火墙的管理方式</p>
+<p>防火墙的管理一般分为本地管理、远程管理和集中管理等。</p>
+<p>本地管理：是指管理员通过防火墙的Console口或防火墙提供的键盘和显示器对防火墙进行配置管理。</p>
+<p><img src="/fhqbs/1.jpg" alt="header"></p>
+<p>远程管理：是指管理员通过以太网或防火墙提供的广域网接口对防火墙进行管理，管理的通信协议可以基于SSH、TELNET、等。</p>
+<p>TELNET</p>
+<p>Telnet协议是TCP&#x2F;IP协议族中的一员，是Internet远程登陆服务的标准协议。它为用户提供在本地计算机上操作远程主机的能力。在电脑上使用telnet程序，用它连接到防火墙。用户可以在telnet程序中输入命令，这些命令会在设备上运行，就像直接在设备的控制台上输入一样。</p>
+<p>SSH（安全外壳协议）</p>
+<p>SSH能够把所有传输的协议进行加密，是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。并且SSH传送数据时，数据是经过压缩的，这可以进—步提高数据传输的速度。所以SSH渐渐的替代了teInet成为远程管理的主要手段。</p>
+<p><img src="/fhqbs/2.jpg" alt="header"></p>
+<p>WEB登陆：</p>
+<p>随着设备硬件的提升，越来越多的防火墙自身拥有了较高的运算及存储能力。于是各种嵌入式系统加载到了这些设备硬件中。如今的防火墙设备能够提供较好的图形操作界面，通过web方式登录后，能够使用设备提供的管理页面进行较好的远程控制。这也成为了现在管理设备最主要的方式。</p>
+<p><img src="/fhqbs/3.jpg" alt="header"></p>
+<p>二.防火墙的区域部署方式：</p>
+<p>（DMZ单防火墙结构）</p>
+<p>目前比较流行和正确的做法是采用DMZ的防火墙部署方式。把提供对外服务的服务器和内网的客户端严格地隔离开来。这样即使DMZ中出现安全风险和漏洞，对内部网络造成的危害也可以得到很好的控制。</p>
+<p><img src="/fhqbs/4.jpg" alt="header"></p>
+<p>（DMZ二路防火墙结构）</p>
+<p>目前比较流行和正确的做法是采用DMZ的防火墙部署方式。把提供对外服务的服务器和内网的客户端严格地隔离开来。这样即使DMZ中出现安全风险和漏洞，对内部网络造成的危害也可以得到很好的控制。</p>
+<p><img src="/fhqbs/5.jpg" alt="header"></p>
+<p>（直接隔离内网与外网）</p>
+<p>仅仅将防火墙部署于外部网络和内部网络之间。如果在内部网络中存在共享资源，那么这是一个非常危险的部署方式。一旦共享服务器为黑客攻击或者被木马病毒渗透的话，那么内部网络的客户端及其资源将没有任何安全可言。</p>
+<p><img src="/fhqbs/6.jpg" alt="header"></p>
+<p>防火墙的接口部署：</p>
+<p><img src="/fhqbs/7.jpg" alt="header"></p>
+<p>目的地址转换</p>
+<p>目的地址转换也成为反向地址转换，可以分为目标地址映射与目标端口映射。它是一种单向针对目标地址的映射，主要用于内部服务器向外部提供服务的情况。也就是说，对于DMZ区域中的服务器，当外网用户访问该服务器的公网IP地址时，防火墙将服务器对外的公网IP转换成该服务器在内网中的IP地址。</p>
+<p>源地址转换</p>
+<p>源地址转换发生在内网地址访问外网时，将内网IP地址转换为指定的IP地址。内网的多个设备可以通过一个有效的公网IP地址访问外部网络。</p>
+<p>双向地址转换</p>
+<p>双向地址转换就是同时将报文中的源地址和目的地址进行转换。这种技术主要在内网设备通过域名（外网IP)的方式访问内网服务器的时候使用。当内网设备通过外网lP访问DMZ区域的服务器时属于内网-&gt;外网，采用源地址转换。但是当DMZ服务器返回消息时，由于内网设备在同一子网下，返回报文不防火墙直接送达，此时无法形成会话。在这种情况下就需要双向地址转换的支持。（ 双向地址转换技术适用 于在单位内部使用公网地址来访问内部服务器）。</p>
+<p>地址转换的目的：</p>
+<p>隐藏内部网络结构。</p>
+<p>解决IP地址紧。</p>
+<p>隐藏内部主机地址。</p>
+<p>1.什么是对象定义<br>对象定义是将制定安全规则时会引用的各种地址、服务集合在一起，定义一个对象名称，方便规则描述。</p>
+<p>2.对象定义可以包括地址、地址组、服务组、时间组等。</p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>深信服</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>静态路由</title>
+    <url>/2022/09/03/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</url>
+    <content><![CDATA[<p>整个网络就好像是一条有很多转弯的路。就是到底目的地需要左转、右转等等，而静态路由就是告诉我们应该往哪个方向，简单的说静态路由在网络中就是一个方向的作用。</p>
+<p>通过实验证明拓扑为：</p>
+<p><img src="/jtly/1.jpg" alt="header"></p>
+<p>R1的端口配置为：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Interface                         IP Address/Mask      Physical   Protocol  </span><br><span class="line">GigabitEthernet0/0/0              10.0.12.1/24         up         up           </span><br><span class="line">LoopBack0                         10.0.1.1/32          up         up(s) </span><br></pre></td></tr></table></figure>
+
+<p>R2的端口配置为：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Interface                         IP Address/Mask      Physical   Protocol  </span><br><span class="line">GigabitEthernet0/0/0              10.0.12.2/24         up         up        </span><br><span class="line">GigabitEthernet0/0/1              10.0.23.2/24         up         up             </span><br><span class="line">LoopBack0                         10.0.2.2/32          up         up(s)      </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>R3端口配置</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Interface                         IP Address/Mask      Physical   Protocol  </span><br><span class="line">GigabitEthernet0/0/0              10.0.23.3/24         up         up           </span><br><span class="line">LoopBack0                         10.0.3.3/32          up         up(s)     </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>R1静态路由</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[R1]ip route-static 10.0.23.0 24 10.0.12.2</span><br></pre></td></tr></table></figure>
+
+<p> R3静态路由</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">ip route-static 10.0.12.1 24 10.0.23.2</span><br></pre></td></tr></table></figure>
+
+<p>这个时候R1与R3能相互通信。</p>
+<p><img src="/jtly/2.jpg" alt="header"></p>
+<p>查看R1的arp表：</p>
+<p><img src="/jtly/3.jpg" alt="header"></p>
+<p>我们在配置静态路由的过程中，可以有两种选择，一是通过下一条，二是通过端口，貌似他们好像是一样都能让网络互通，但是他们有着区别。</p>
+<p>写静态路由的时候把想要的出接口和下一跳地址都写上</p>
+<p>只写出接口的时候，路由器会认为目标地址段都是直连的，当目标地址多的时候这会导致大量的arp请求及cache操作，浪费更多的资源，也有proxy arp和icmp redirect的问题</p>
+<p>但如果只写下一跳地址，在这个接口down的时候，可能会因为递归路由的问题跑到另外一个接口上，造成完全不合预期的路由走向</p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>网络协议</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>双向地址转换（深信服）</title>
+    <url>/2022/08/22/%E5%8F%8C%E5%90%91%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%EF%BC%88%E6%B7%B1%E4%BF%A1%E6%9C%8D%EF%BC%89/</url>
+    <content><![CDATA[<p>双向地址转换技术适用 于在单位内部使用公网地址来访问内部服务器。</p>
+<p>1、登陆防火墙WEB界面，步骤略。</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110108mh8s8s7a3mgtvmdm.png"></p>
+<p>2、网络—接口&#x2F;区域—区域中，配置eth1\eth2为非信任区，eth3\eth4为信任区。如下图所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110137lwrwpmmnpmm03mm9.png"></p>
+<p>3、物理接口定义如下红框所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110218re47b7n1jwzejbn4.png"></p>
+<p>4、对象—网络对象—新增页面如下图：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110247w8a6aoybn0w6o68z.png"></p>
+<p>5、新增业务窗口页面中，基本信息名称为WEB服务，描述为空，业务重要性普通业务；敏感数据为系统自动识别；服务器配置新增服务器IP地址，保存。如下图所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110342couos6t27guts7q6.png"></p>
+<p>6、新增IP组窗口页面中，基本信息名称为X.X.X.X(有一定代表意义即可)，描述为空；IP组类型为IPV4;IP地址中填写IP地址X.X.X.X&#x2F;X(终端地址段)，保存。如下图所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110412esnom21p2bu0bej1.png"></p>
+<p>7、策略—地址转换 新增。如下图所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110455i1ntz8eresfhifui.png"></p>
+<p>8、新增DNAT和双向地址窗口页面中，基本信息名称为xxx(有代表意义即可)，描述为空；源始数据包中源区域为非信任区，外网地址为指定IP,X.X.X.X，协议端口为TCP，8888.如下图所示：  </p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110532nx03dzxdudxqk70y.png"></p>
+<p>9、转换后的数据包中内网地址为指定IP,X.X.X.X,端口转换为空，如下图所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110604scirbzno3osc5nso.png"></p>
+<p>10、点击高级设置，勾选本机访问控制和应用控制策略自动放行上述条件流量。如下页面：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110655drddbodd9otwb2ok.png"></p>
+<p>11、高级设置窗口中，源地址转换中的目的区域&#x2F;接口为区域，信任区；源地址转换为出接口地址；访问者设置源网络对象为全部。如下图所示：</p>
+<p><img src="https://bbs.sangfor.com.cn/data/attachment/forum/201909/27/110736jlwdl6u0bded7r22.png"></p>
+<p>最后确定，保存。大功告成！</p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>深信服</tag>
+      </tags>
+  </entry>
+</search>

@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>传统的防火墙部署 | 醉会梦忆</title><meta name="keywords" content="深信服"><meta name="author" content="梦忆"><meta name="copyright" content="梦忆"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="传统的防火墙包括（ IPS(入侵防御)、IDS(入侵检测)、AV（防毒墙）、waf(web防火墙)） NGFW（下一代防火墙） 防火墙的管理方式 防火墙的管理一般分为本地管理、远程管理和集中管理等。 本地管理：是指管理员通过防火墙的Console口或防火墙提供的键盘和显示器对防火墙进行配置管理。  远程管理：是指管理员通过以太网或防火墙提供的广域网接口对防火墙进行管理，管理的通信协议可以基于SSH">
+<meta property="og:type" content="article">
+<meta property="og:title" content="传统的防火墙部署">
+<meta property="og:url" content="https://liyijundbk.github.io/2022/08/22/%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="醉会梦忆">
+<meta property="og:description" content="传统的防火墙包括（ IPS(入侵防御)、IDS(入侵检测)、AV（防毒墙）、waf(web防火墙)） NGFW（下一代防火墙） 防火墙的管理方式 防火墙的管理一般分为本地管理、远程管理和集中管理等。 本地管理：是指管理员通过防火墙的Console口或防火墙提供的键盘和显示器对防火墙进行配置管理。  远程管理：是指管理员通过以太网或防火墙提供的广域网接口对防火墙进行管理，管理的通信协议可以基于SSH">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liyijundbk.github.io/fhqbs/fhqtp.jpg">
+<meta property="article:published_time" content="2022-08-22T11:14:23.000Z">
+<meta property="article:modified_time" content="2022-08-29T09:20:06.000Z">
+<meta property="article:author" content="梦忆">
+<meta property="article:tag" content="深信服">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://liyijundbk.github.io/fhqbs/fhqtp.jpg"><link rel="shortcut icon" href="/assets/tx.jpg"><link rel="canonical" href="https://liyijundbk.github.io/2022/08/22/%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E9%83%A8%E7%BD%B2/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '传统的防火墙部署',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-08-29 17:20:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu@1.0.5/lib/clock.min.css" /><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/tx.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 存档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/fhqbs/fhqtp.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">醉会梦忆</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 存档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">传统的防火墙部署</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-08-22T11:14:23.000Z" title="发表于 2022-08-22 19:14:23">2022-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-08-29T09:20:06.000Z" title="更新于 2022-08-29 17:20:06">2022-08-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80/">计算机网络基础</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="传统的防火墙部署"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>传统的防火墙包括（ IPS(入侵防御)、IDS(入侵检测)、AV（防毒墙）、waf(web防火墙)）</p>
+<p>NGFW（下一代防火墙）</p>
+<p>防火墙的管理方式</p>
+<p>防火墙的管理一般分为本地管理、远程管理和集中管理等。</p>
+<p>本地管理：是指管理员通过防火墙的Console口或防火墙提供的键盘和显示器对防火墙进行配置管理。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/1.jpg" alt="header"></p>
+<p>远程管理：是指管理员通过以太网或防火墙提供的广域网接口对防火墙进行管理，管理的通信协议可以基于SSH、TELNET、等。</p>
+<p>TELNET</p>
+<p>Telnet协议是TCP&#x2F;IP协议族中的一员，是Internet远程登陆服务的标准协议。它为用户提供在本地计算机上操作远程主机的能力。在电脑上使用telnet程序，用它连接到防火墙。用户可以在telnet程序中输入命令，这些命令会在设备上运行，就像直接在设备的控制台上输入一样。</p>
+<p>SSH（安全外壳协议）</p>
+<p>SSH能够把所有传输的协议进行加密，是目前较可靠，专为远程登录会话和其他网络服务提供安全性的协议。并且SSH传送数据时，数据是经过压缩的，这可以进—步提高数据传输的速度。所以SSH渐渐的替代了teInet成为远程管理的主要手段。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/2.jpg" alt="header"></p>
+<p>WEB登陆：</p>
+<p>随着设备硬件的提升，越来越多的防火墙自身拥有了较高的运算及存储能力。于是各种嵌入式系统加载到了这些设备硬件中。如今的防火墙设备能够提供较好的图形操作界面，通过web方式登录后，能够使用设备提供的管理页面进行较好的远程控制。这也成为了现在管理设备最主要的方式。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/3.jpg" alt="header"></p>
+<p>二.防火墙的区域部署方式：</p>
+<p>（DMZ单防火墙结构）</p>
+<p>目前比较流行和正确的做法是采用DMZ的防火墙部署方式。把提供对外服务的服务器和内网的客户端严格地隔离开来。这样即使DMZ中出现安全风险和漏洞，对内部网络造成的危害也可以得到很好的控制。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/4.jpg" alt="header"></p>
+<p>（DMZ二路防火墙结构）</p>
+<p>目前比较流行和正确的做法是采用DMZ的防火墙部署方式。把提供对外服务的服务器和内网的客户端严格地隔离开来。这样即使DMZ中出现安全风险和漏洞，对内部网络造成的危害也可以得到很好的控制。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/5.jpg" alt="header"></p>
+<p>（直接隔离内网与外网）</p>
+<p>仅仅将防火墙部署于外部网络和内部网络之间。如果在内部网络中存在共享资源，那么这是一个非常危险的部署方式。一旦共享服务器为黑客攻击或者被木马病毒渗透的话，那么内部网络的客户端及其资源将没有任何安全可言。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/6.jpg" alt="header"></p>
+<p>防火墙的接口部署：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/7.jpg" alt="header"></p>
+<p>目的地址转换</p>
+<p>目的地址转换也成为反向地址转换，可以分为目标地址映射与目标端口映射。它是一种单向针对目标地址的映射，主要用于内部服务器向外部提供服务的情况。也就是说，对于DMZ区域中的服务器，当外网用户访问该服务器的公网IP地址时，防火墙将服务器对外的公网IP转换成该服务器在内网中的IP地址。</p>
+<p>源地址转换</p>
+<p>源地址转换发生在内网地址访问外网时，将内网IP地址转换为指定的IP地址。内网的多个设备可以通过一个有效的公网IP地址访问外部网络。</p>
+<p>双向地址转换</p>
+<p>双向地址转换就是同时将报文中的源地址和目的地址进行转换。这种技术主要在内网设备通过域名（外网IP)的方式访问内网服务器的时候使用。当内网设备通过外网lP访问DMZ区域的服务器时属于内网-&gt;外网，采用源地址转换。但是当DMZ服务器返回消息时，由于内网设备在同一子网下，返回报文不防火墙直接送达，此时无法形成会话。在这种情况下就需要双向地址转换的支持。（ 双向地址转换技术适用 于在单位内部使用公网地址来访问内部服务器）。</p>
+<p>地址转换的目的：</p>
+<p>隐藏内部网络结构。</p>
+<p>解决IP地址紧。</p>
+<p>隐藏内部主机地址。</p>
+<p>1.什么是对象定义<br>对象定义是将制定安全规则时会引用的各种地址、服务集合在一起，定义一个对象名称，方便规则描述。</p>
+<p>2.对象定义可以包括地址、地址组、服务组、时间组等。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://liyijundbk.github.io">梦忆</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://liyijundbk.github.io/2022/08/22/%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E9%83%A8%E7%BD%B2/">https://liyijundbk.github.io/2022/08/22/%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E9%83%A8%E7%BD%B2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://liyijundbk.github.io" target="_blank">醉会梦忆</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%B7%B1%E4%BF%A1%E6%9C%8D/">深信服</a></div><div class="post_share"><div class="social-share" data-image="/fhqbs/fhqtp.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/22/%E5%8F%8C%E5%90%91%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%EF%BC%88%E6%B7%B1%E4%BF%A1%E6%9C%8D%EF%BC%89/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/firewall.jpg" onerror="onerror=null;src='/assets/wdbj.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">双向地址转换（深信服）</div></div></a></div><div class="next-post pull-right"><a href="/2022/08/21/%E4%BA%A4%E6%8D%A2%E6%9C%BA/"><img class="next-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/2.jpg" onerror="onerror=null;src='/assets/wdbj.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">交换机</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/08/22/NGAF/" title="NGAF（下一代防火墙）"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/NGAF/NGAF.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-22</div><div class="title">NGAF（下一代防火墙）</div></div></a></div><div><a href="/2022/08/22/%E5%8F%8C%E5%90%91%E5%9C%B0%E5%9D%80%E8%BD%AC%E6%8D%A2%EF%BC%88%E6%B7%B1%E4%BF%A1%E6%9C%8D%EF%BC%89/" title="双向地址转换（深信服）"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/fhqbs/firewall.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-22</div><div class="title">双向地址转换（深信服）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/tx.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">梦忆</div><div class="author-info__description">好好学习天天向上</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/liyijundbk/liyijundbk.github.io" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:212789562@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/10/%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/" title="重置root密码"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/root/1.jpg" onerror="this.onerror=null;this.src='/assets/wdbj.jpg'" alt="重置root密码"/></a><div class="content"><a class="title" href="/2022/09/10/%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/" title="重置root密码">重置root密码</a><time datetime="2022-09-10T09:31:14.000Z" title="发表于 2022-09-10 17:31:14">2022-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/10/autofus/" title="配置autofs"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/autofs/1.jpg" onerror="this.onerror=null;this.src='/assets/wdbj.jpg'" alt="配置autofs"/></a><div class="content"><a class="title" href="/2022/09/10/autofus/" title="配置autofs">配置autofs</a><time datetime="2022-09-10T09:30:16.000Z" title="发表于 2022-09-10 17:30:16">2022-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/10/%E5%BD%92%E6%A1%A3%E4%B8%8E%E5%8E%8B%E7%BC%A9/" title="归档与压缩"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/ysyjy/1.jpg" onerror="this.onerror=null;this.src='/assets/wdbj.jpg'" alt="归档与压缩"/></a><div class="content"><a class="title" href="/2022/09/10/%E5%BD%92%E6%A1%A3%E4%B8%8E%E5%8E%8B%E7%BC%A9/" title="归档与压缩">归档与压缩</a><time datetime="2022-09-10T09:29:18.000Z" title="发表于 2022-09-10 17:29:18">2022-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/10/%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6%EF%BC%88find%EF%BC%89/" title="查找文件（find）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/find/1.jpg" onerror="this.onerror=null;this.src='/assets/wdbj.jpg'" alt="查找文件（find）"/></a><div class="content"><a class="title" href="/2022/09/10/%E6%9F%A5%E6%89%BE%E6%96%87%E4%BB%B6%EF%BC%88find%EF%BC%89/" title="查找文件（find）">查找文件（find）</a><time datetime="2022-09-10T09:28:41.000Z" title="发表于 2022-09-10 17:28:41">2022-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/%E6%96%87%E6%A1%A3%E7%9A%84%E6%9D%83%E9%99%90%E4%B8%8E%E5%BD%92%E5%B1%9E/" title="文档的权限与归属"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/wjdqxygs/1.jpg" onerror="this.onerror=null;this.src='/assets/wdbj.jpg'" alt="文档的权限与归属"/></a><div class="content"><a class="title" href="/2022/09/08/%E6%96%87%E6%A1%A3%E7%9A%84%E6%9D%83%E9%99%90%E4%B8%8E%E5%BD%92%E5%B1%9E/" title="文档的权限与归属">文档的权限与归属</a><time datetime="2022-09-08T09:33:06.000Z" title="发表于 2022-09-08 17:33:06">2022-09-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/fhqbs/fhqtp.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By 梦忆</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="true" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax src="https://cdn.cbd.int/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<div class="recent-post-item" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 280px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://liyijundbk.github.io//api?liyijundbk",['#e4dfd7', '#f9f4dc', '#f7e8aa', '#f7e8aa', '#f8df72', '#fcd217', '#fcc515', '#f28e16', '#fb8b05', '#d85916', '#f43e06'],'liyijundbk')
+    }
+  </script><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu@1.0.5/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = '1f349fb555ad45cc93af5960941fbe4d';
+  var gaud_map_key = '6b5e272b15f269fa296a546989d180ed';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.6534116,27.96920845';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu@1.0.5/lib/clock.min.js"></script><!-- hexo injector body_end end --></body></html>
