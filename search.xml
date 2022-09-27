@@ -1,35 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>NGAF（下一代防火墙）</title>
-    <url>/2022/08/22/NGAF/</url>
-    <content><![CDATA[<p>传统防火墙<br><img src="/NGAF/1.jpg" alt="header"></p>
-<p>下一代防火墙的功能：应用控制策略、地址转换策略、安全防护策略、流量控制策略、用户认证策略。<br>NGAF的部署模式：路由模式，透明模式，虚拟网线模式（虚拟网线模式是成双成对的出现），旁路部署。 </p>
-<p> <img src="/NGAF/23.jpg" alt="header"></p>
-<p>基于用户和应用的内容安全控制</p>
-<p>需要基于用户和应用做安全控制，要求对用户进行识别和对应用进行识别。NGAF具备用户认证系统和海量的应用识别特征库。</p>
-<p>NGAF的功能：针对用户上网：</p>
-<p>1.用户认证（APT检测）</p>
-<p>2.URL过滤（网关扫毒）</p>
-<p>应用控制（DOS防护）</p>
-<p>流量管理（IPS）</p>
-<p>针对访问的服务器：</p>
-<p>用户认证：未授权访问，拒绝非法用户流量</p>
-<p>应用控制：减少不必要的访问，保护服务器的安全。</p>
-<p>服务器保护：sql注入攻击，xss攻击</p>
-<p>DOS防护:DDos攻击(、端口扫描、洪水攻击、协议报文攻击)</p>
-<p>IPS防护:漏洞攻击(针对服务器操作系统、软件漏洞)</p>
-<p>网站篡改防护</p>
-<p>风险分析</p>
-<h3 id="数据中心"><a href="#数据中心" class="headerlink" title="数据中心"></a>数据中心</h3><p>数据中心可以用于查询和统计各功能模块产生的日志。例如可以查询出WEB应用防护阻断的攻击行为，以及可以查询到攻击源IP，目标IP等详细信息。可以统计出服务器在指定的时间内受到多少次DOS攻击等。</p>
-<p>  <img src="/NGAF/4.jpg" alt="header"></p>
-<p>  <img src="/NGAF/5.jpg" alt="header"></p>
+    <title>LVM，逻辑卷管理机制</title>
+    <url>/2022/09/19/LVM%EF%BC%8C%E9%80%BB%E8%BE%91%E5%8D%B7%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<p>要解决的问题？</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.创建逻辑分区</span><br><span class="line">2.调整逻辑卷的大小</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>LVM，逻辑卷管理机制—化0为整，动态伸缩</p>
+<p>把零散的分区（pv物理设备）&#x3D;&#x3D;&#x3D;》整编的大卷组（VG虚拟磁盘）&#x3D;&#x3D;&#x3D;》根据需要获得空间（虚拟分区LV）</p>
+<p>识别磁盘—》分区——》卷组【LVM逻辑卷管理】——》格式化）——》挂载——》访问挂载点</p>
+<p>实现方式：</p>
+<p>分区物理卷（500GX4快）——》卷组（2T的逻辑卷）——》逻辑卷（按需求划分逻辑卷）</p>
+<p>pv（不用管）—&gt;vg—&gt;lv</p>
+<p>LVM的管理工具：</p>
+<hr>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">物理卷操作：pvscan(扫描物理卷),pvdispaly（查看物理卷后面跟逻辑磁盘的名字）,pvcreate </span><br><span class="line">卷组操作：vgscan（扫描），vgdisplay（查看），vgremove（删除），vgextend（扩展逻辑卷），</span><br><span class="line">vgchange（更改逻辑卷），vgcreat（创建逻辑卷）</span><br><span class="line">逻辑卷操作:lvscan,lvdisplay,lvcreate,lvremove,lvextend</span><br><span class="line">PE分配逻辑卷的最小单位。</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>调整逻辑卷的大小</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.lvscan（扫描逻辑卷，找到调整的逻辑卷的位置）</span><br><span class="line"></span><br><span class="line">active     &#x27;dev/test/vo&#x27; [200.00MiB] inherit</span><br><span class="line">2.df -hT /vo （查看逻辑卷是否挂载，如果没有挂载，那么进行</span><br><span class="line">挂载mkdir /abc ,mount /dev/test/vo /abc进行挂载就好）</span><br><span class="line">3.lvextend -L 300M /dev/test/vo(增加逻辑卷的为300M)</span><br><span class="line">4.lvscan (验证逻辑卷的大小为200m)</span><br><span class="line">5.blkid /dev/test/ov (查看逻辑卷的类型，会发现为xfs)</span><br><span class="line">/dev/test/ov:  uuid=&#x27;bb625-52a8-4725-bcfc-846bb45575fb&#x27; **TYPE=&quot;xsf&quot;**</span><br><span class="line">6.xfs_growfs 挂载点（进行激活，告诉内核逻辑卷为300M）</span><br><span class="line">注意：如果是逻辑卷的类型是xfs那么，激活工具是xfs—growfs 挂载点，如果是ext2/3/4,那么使用resize2fs这个工具</span><br><span class="line">使用方法一样。</span><br><span class="line">/dev/test(卷组)/vo（逻辑卷）</span><br></pre></td></tr></table></figure>
+
+<p>2.创建新的逻辑分区</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1vgscan((扫描卷组)</span><br><span class="line">2.vgcreat myvg /dev/vdb3(通过vdb3创建逻辑卷组myvg)</span><br><span class="line">如果发现卷组错了，通过vgremove myvg删除</span><br><span class="line">3.vgcreat -s 16M myvg /dev/vdb3(创建最小空间是16M的名字叫myvg的卷组)</span><br><span class="line">4.lvvreat -n mylv -L 800M myvg（创建逻辑卷指定名称，指定大小（L内存的大小，l指定PE的块数量），指定从哪里拿到空间）</span><br><span class="line">5,格式化 mkfs.（格式） 设备目录</span><br><span class="line">6.mkdir /mnt/date（开机自动挂载）</span><br><span class="line">7.vim /etc/fstab</span><br><span class="line">dev/myvg/mylv（设备目录）  mnt/date（挂载目录）   vfat（通过什么类型格式化）  defaults（默认参数） 0（默认参数）  0（默认参数）</span><br><span class="line">8.退出保存，df -hT /mnt/date</span><br></pre></td></tr></table></figure>
+
+]]></content>
+  </entry>
+  <entry>
+    <title>NTP（客户端的配置）</title>
+    <url>/2022/09/08/NTP%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E9%85%8D%E7%BD%AE%EF%BC%89/</url>
+    <content><![CDATA[<p>NTP是什么</p>
+<p>NTP（network time protocol）</p>
+<p>时间同步：将计算机与指定服务器时间同步。</p>
+<p>NTP的服务端（考试服务器）：NTPd，chronyd</p>
+<p>NTP的客户端：软件包chrony（系统服务chronyd）</p>
+<p>客户机的配置文件：&#x2F;etc&#x2F;chrony.conf</p>
+<p>chrony软件包的安装：yum -y install chrony</p>
+<p>pool的时间服务器的域名是iburst。  &#x2F;&#x2F;这个域名可以解析成一堆ip</p>
+<p>sever的时间服务器的域名是iburst。&#x2F;&#x2F;这个域名可以解析成一个ip</p>
+<p>NTP的验证&#x2F;设置工具</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.timedatectl(查看NTP的验证）</span><br><span class="line"></span><br><span class="line">更改时间的命令date -s &#x27;2002-02-02&#x27;,查看时间date命令</span><br><span class="line"></span><br><span class="line">chronyc sources -v(查看时间源执行情况)</span><br></pre></td></tr></table></figure>
+
+<p>因为NTP是服务，更改配置时，需要重启。</p>
+<p>systemctl restart chroyd</p>
 ]]></content>
       <categories>
-        <category>网络设备</category>
+        <category>linux基础</category>
       </categories>
       <tags>
-        <tag>深信服</tag>
+        <tag>RHLE 8</tag>
       </tags>
   </entry>
   <entry>
@@ -88,30 +107,36 @@
       </tags>
   </entry>
   <entry>
-    <title>LVM，逻辑卷管理机制</title>
-    <url>/2022/09/19/LVM%EF%BC%8C%E9%80%BB%E8%BE%91%E5%8D%B7%E7%AE%A1%E7%90%86%E6%9C%BA%E5%88%B6/</url>
-    <content><![CDATA[<p>要解决的问题？</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.创建逻辑分区</span><br><span class="line">2.调整逻辑卷的大小</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>LVM，逻辑卷管理机制—化0为整，动态伸缩</p>
-<p>把零散的分区（pv物理设备）&#x3D;&#x3D;&#x3D;》整编的大卷组（VG虚拟磁盘）&#x3D;&#x3D;&#x3D;》根据需要获得空间（虚拟分区LV）</p>
-<p>识别磁盘—》分区——》卷组【LVM逻辑卷管理】——》格式化）——》挂载——》访问挂载点</p>
-<p>实现方式：</p>
-<p>分区物理卷（500GX4快）——》卷组（2T的逻辑卷）——》逻辑卷（按需求划分逻辑卷）</p>
-<p>pv（不用管）—&gt;vg—&gt;lv</p>
-<p>LVM的管理工具：</p>
-<hr>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">物理卷操作：pvscan(扫描物理卷),pvdispaly（查看物理卷后面跟逻辑磁盘的名字）,pvcreate </span><br><span class="line">卷组操作：vgscan（扫描），vgdisplay（查看），vgremove（删除），vgextend（扩展逻辑卷），</span><br><span class="line">vgchange（更改逻辑卷），vgcreat（创建逻辑卷）</span><br><span class="line">逻辑卷操作:lvscan,lvdisplay,lvcreate,lvremove,lvextend</span><br><span class="line">PE分配逻辑卷的最小单位。</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>调整逻辑卷的大小</li>
-</ol>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.lvscan（扫描逻辑卷，找到调整的逻辑卷的位置）</span><br><span class="line"></span><br><span class="line">active     &#x27;dev/test/vo&#x27; [200.00MiB] inherit</span><br><span class="line">2.df -hT /vo （查看逻辑卷是否挂载，如果没有挂载，那么进行</span><br><span class="line">挂载mkdir /abc ,mount /dev/test/vo /abc进行挂载就好）</span><br><span class="line">3.lvextend -L 300M /dev/test/vo(增加逻辑卷的为300M)</span><br><span class="line">4.lvscan (验证逻辑卷的大小为200m)</span><br><span class="line">5.blkid /dev/test/ov (查看逻辑卷的类型，会发现为xfs)</span><br><span class="line">/dev/test/ov:  uuid=&#x27;bb625-52a8-4725-bcfc-846bb45575fb&#x27; **TYPE=&quot;xsf&quot;**</span><br><span class="line">6.xfs_growfs 挂载点（进行激活，告诉内核逻辑卷为300M）</span><br><span class="line">注意：如果是逻辑卷的类型是xfs那么，激活工具是xfs—growfs 挂载点，如果是ext2/3/4,那么使用resize2fs这个工具</span><br><span class="line">使用方法一样。</span><br><span class="line">/dev/test(卷组)/vo（逻辑卷）</span><br></pre></td></tr></table></figure>
-
-<p>2.创建新的逻辑分区</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1vgscan((扫描卷组)</span><br><span class="line">2.vgcreat myvg /dev/vdb3(通过vdb3创建逻辑卷组myvg)</span><br><span class="line">如果发现卷组错了，通过vgremove myvg删除</span><br><span class="line">3.vgcreat -s 16M myvg /dev/vdb3(创建最小空间是16M的名字叫myvg的卷组)</span><br><span class="line">4.lvvreat -n mylv -L 800M myvg（创建逻辑卷指定名称，指定大小（L内存的大小，l指定PE的块数量），指定从哪里拿到空间）</span><br><span class="line">5,格式化 mkfs.（格式） 设备目录</span><br><span class="line">6.mkdir /mnt/date（开机自动挂载）</span><br><span class="line">7.vim /etc/fstab</span><br><span class="line">dev/myvg/mylv（设备目录）  mnt/date（挂载目录）   vfat（通过什么类型格式化）  defaults（默认参数） 0（默认参数）  0（默认参数）</span><br><span class="line">8.退出保存，df -hT /mnt/date</span><br></pre></td></tr></table></figure>
-
+    <title>NGAF（下一代防火墙）</title>
+    <url>/2022/08/22/NGAF/</url>
+    <content><![CDATA[<p>传统防火墙<br><img src="/NGAF/1.jpg" alt="header"></p>
+<p>下一代防火墙的功能：应用控制策略、地址转换策略、安全防护策略、流量控制策略、用户认证策略。<br>NGAF的部署模式：路由模式，透明模式，虚拟网线模式（虚拟网线模式是成双成对的出现），旁路部署。 </p>
+<p> <img src="/NGAF/23.jpg" alt="header"></p>
+<p>基于用户和应用的内容安全控制</p>
+<p>需要基于用户和应用做安全控制，要求对用户进行识别和对应用进行识别。NGAF具备用户认证系统和海量的应用识别特征库。</p>
+<p>NGAF的功能：针对用户上网：</p>
+<p>1.用户认证（APT检测）</p>
+<p>2.URL过滤（网关扫毒）</p>
+<p>应用控制（DOS防护）</p>
+<p>流量管理（IPS）</p>
+<p>针对访问的服务器：</p>
+<p>用户认证：未授权访问，拒绝非法用户流量</p>
+<p>应用控制：减少不必要的访问，保护服务器的安全。</p>
+<p>服务器保护：sql注入攻击，xss攻击</p>
+<p>DOS防护:DDos攻击(、端口扫描、洪水攻击、协议报文攻击)</p>
+<p>IPS防护:漏洞攻击(针对服务器操作系统、软件漏洞)</p>
+<p>网站篡改防护</p>
+<p>风险分析</p>
+<h3 id="数据中心"><a href="#数据中心" class="headerlink" title="数据中心"></a>数据中心</h3><p>数据中心可以用于查询和统计各功能模块产生的日志。例如可以查询出WEB应用防护阻断的攻击行为，以及可以查询到攻击源IP，目标IP等详细信息。可以统计出服务器在指定的时间内受到多少次DOS攻击等。</p>
+<p>  <img src="/NGAF/4.jpg" alt="header"></p>
+<p>  <img src="/NGAF/5.jpg" alt="header"></p>
 ]]></content>
+      <categories>
+        <category>网络设备</category>
+      </categories>
+      <tags>
+        <tag>深信服</tag>
+      </tags>
   </entry>
   <entry>
     <title>READ储存</title>
@@ -123,93 +148,6 @@
       </categories>
       <tags>
         <tag>储存</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>NTP（客户端的配置）</title>
-    <url>/2022/09/08/NTP%EF%BC%88%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%9A%84%E9%85%8D%E7%BD%AE%EF%BC%89/</url>
-    <content><![CDATA[<p>NTP是什么</p>
-<p>NTP（network time protocol）</p>
-<p>时间同步：将计算机与指定服务器时间同步。</p>
-<p>NTP的服务端（考试服务器）：NTPd，chronyd</p>
-<p>NTP的客户端：软件包chrony（系统服务chronyd）</p>
-<p>客户机的配置文件：&#x2F;etc&#x2F;chrony.conf</p>
-<p>chrony软件包的安装：yum -y install chrony</p>
-<p>pool的时间服务器的域名是iburst。  &#x2F;&#x2F;这个域名可以解析成一堆ip</p>
-<p>sever的时间服务器的域名是iburst。&#x2F;&#x2F;这个域名可以解析成一个ip</p>
-<p>NTP的验证&#x2F;设置工具</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.timedatectl(查看NTP的验证）</span><br><span class="line"></span><br><span class="line">更改时间的命令date -s &#x27;2002-02-02&#x27;,查看时间date命令</span><br><span class="line"></span><br><span class="line">chronyc sources -v(查看时间源执行情况)</span><br></pre></td></tr></table></figure>
-
-<p>因为NTP是服务，更改配置时，需要重启。</p>
-<p>systemctl restart chroyd</p>
-]]></content>
-      <categories>
-        <category>linux基础</category>
-      </categories>
-      <tags>
-        <tag>RHLE 8</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>RED hat的文件管理命令</title>
-    <url>/2022/09/03/RED-hat%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4/</url>
-    <content><![CDATA[<p>文件系统层次结构：linux中所有的文件都存在系统文件中，他们好像一个颠倒的目录树，树根的下面是目录和子目录。</p>
-<p><img src="/linux2/1.jpg" alt="header"></p>
-<p>linux的主要目录</p>
-<p>&#x2F;user 安装的文件，共享的库，包括文件和只读程序数据。重要的子目录：</p>
-<p>   .&#x2F;user&#x2F;bin:用户命令</p>
-<p>   .&#x2F;user&#x2F;sbin:系统管理命令</p>
-<p>   .&#x2F;user&#x2F;local：本地自定义文件</p>
-<p>&#x2F;etc&#x2F;特定的系统配置文件。</p>
-<p>&#x2F;var&#x2F;log:这个是登录文件放置日志的的目录。里面比较重要的文件&#x2F;var&#x2F;log&#x2F;messages，&#x2F;var&#x2F;log&#x2F;harry(记录登陆者信息)等。</p>
-<p>&#x2F;var&#x2F;run&#x2F;：某些程序启动服务后，会将他们PID放置在这个目录下。</p>
-<p>&#x2F;var&#x2F;lib:程序本身执行的过程中需要使用到的数据文件放置的目录。再次目录下各自的软件应该要有各自的目录。举例来说，Mysql的数据库放置到&#x2F;var&#x2F;lib&#x2F;mysql，而rpm的数据库则放到&#x2F;var&#x2F;lib&#x2F;rpm目录下。</p>
-<p>&#x2F;root管理超级用户root的主目录</p>
-<p>&#x2F;dev 包含特殊的设备文件，提供系统用于访问硬件。</p>
-<p>&#x2F;boot 开机过程所需要的文件</p>
-<p>&#x2F;home&#x2F;主目录是普通用户存储个人配置和配置文件的位置 </p>
-<p>&#x2F;tmp&#x2F;存储临时文件。</p>
-<p>什么是绝对路径，相对路径？</p>
-<p>相对路径：从一个目录为起点到另外一个的目录的路径。<br>举例：<br>比如你的C盘有一个文件夹叫FIle，文件下有两个文件file one 和 file two<br>表示出file two的方法有两种</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">第一种（绝对路径表示法）：C：\FIle\file two</span><br><span class="line">第二种（相对路径表示法）：FIle two</span><br></pre></td></tr></table></figure>
-
-<p><strong>绝对路径</strong>：从根目录为起点到某一个目录的路径。</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">例如：C:\FIle\path one\file one</span><br></pre></td></tr></table></figure>
-
-<p>命令pwd是显示该shell的当前工作目录，ls是显示该目录有哪些文件，</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin wdsj]$ pwd</span><br><span class="line">/home/lyj/wdsj</span><br><span class="line">[lyj@admin wdsj]$ ls</span><br><span class="line">1.txt  2.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>cd命令是来更改当前的工作目录，如果没有参数那么表示返回主目录，cd命令可以与绝对路径和相对路径一起使用。</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin wdsj]$ pwd</span><br><span class="line">/home/lyj/wdsj</span><br><span class="line">[lyj@admin wdsj]$ cd</span><br><span class="line">[lyj@admin ~]$ pwd</span><br><span class="line">/home/lyj</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>touch创建文件，通常将文件的时间更新到当前日期和时间。</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin wdsj]# ls</span><br><span class="line">1.txt  2.txt</span><br><span class="line">[root@admin wdsj]# touch 3.txt</span><br><span class="line">[root@admin wdsj]# ls</span><br><span class="line">1.txt  2.txt  3.txt</span><br><span class="line">[root@admin wdsj]# ls -l</span><br><span class="line">总用量 8</span><br><span class="line">-rw-r--r--. 1 root root 244 9月   3 09:55 1.txt</span><br><span class="line">-rw-r--r--. 1 root root 132 9月   3 10:03 2.txt</span><br><span class="line">-rw-r--r--. 1 root root   0 9月   3 11:50 3.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>linux基础</category>
-      </categories>
-      <tags>
-        <tag>red hat</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>RHLE的网络配置</title>
-    <url>/2022/09/07/RHLE%E7%9A%84%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<p>1.rht -vmctl reset red（重置虚拟机）</p>
-<p>2.更改用户名用nmtui →set sysetm hostname —&gt;设置主机名字</p>
-<p>登录ssh root@主机名</p>
-<p>network ——&gt;NetworkManager(RHEL8已经没有network)</p>
-<p>RHEl 7&#x2F;8的系统管理器</p>
-<p>主机名存在etc&#x2F;hostname</p>
-<p>nmcli使用 </p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++nmcli device status（查看网卡）</span><br><span class="line">++nmcli connection show（查看配置）</span><br><span class="line">++nmcli connection modify （网卡）IPv4.addresses （IP地址/掩码）  该网卡的IP地址</span><br><span class="line">++nmcli connection up （网卡）激活网卡</span><br></pre></td></tr></table></figure>
-
-<p>ip add list（查看ip地址的信息）</p>
-]]></content>
-      <categories>
-        <category>linux基础</category>
-      </categories>
-      <tags>
-        <tag>RHLE 8</tag>
       </tags>
   </entry>
   <entry>
@@ -264,24 +202,87 @@
       </tags>
   </entry>
   <entry>
-    <title>配置autofs</title>
-    <url>/2022/09/10/autofus/</url>
-    <content><![CDATA[<p>本地文件系统：文档存放在本地连接的磁盘上<br>EXT4，XFS,SWAP</p>
-<p>网络文件系统：文档存放在局域网中的一台服务器的磁盘上的</p>
-<p>NFS :(network file system)</p>
-<p>samba共享：（windons共享）</p>
-<p>mount挂载（本地）：</p>
-<pre><code>  mount /dev/cdrom /mnt/dvd
+    <title>RHLE的网络配置</title>
+    <url>/2022/09/07/RHLE%E7%9A%84%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<p>1.rht -vmctl reset red（重置虚拟机）</p>
+<p>2.更改用户名用nmtui →set sysetm hostname —&gt;设置主机名字</p>
+<p>登录ssh root@主机名</p>
+<p>network ——&gt;NetworkManager(RHEL8已经没有network)</p>
+<p>RHEl 7&#x2F;8的系统管理器</p>
+<p>主机名存在etc&#x2F;hostname</p>
+<p>nmcli使用 </p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++nmcli device status（查看网卡）</span><br><span class="line">++nmcli connection show（查看配置）</span><br><span class="line">++nmcli connection modify （网卡）IPv4.addresses （IP地址/掩码）  该网卡的IP地址</span><br><span class="line">++nmcli connection up （网卡）激活网卡</span><br></pre></td></tr></table></figure>
 
-  mount /dev/sda1 /mnt/tdir
-</code></pre>
-<p>nfs客户端—</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">查看共享资源列表：showmount -e 目的主机（发现没法访问，原因是没有这个服务安装就好，yum install nfs-utlis）</span><br><span class="line">挂载nfs共享资源：mount 服务器地址：共享文件夹路径 /mnt/tdir </span><br></pre></td></tr></table></figure>
+<p>ip add list（查看ip地址的信息）</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RED hat的文件管理命令</title>
+    <url>/2022/09/03/RED-hat%E7%9A%84%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<p>文件系统层次结构：linux中所有的文件都存在系统文件中，他们好像一个颠倒的目录树，树根的下面是目录和子目录。</p>
+<p><img src="/linux2/1.jpg" alt="header"></p>
+<p>linux的主要目录</p>
+<p>&#x2F;user 安装的文件，共享的库，包括文件和只读程序数据。重要的子目录：</p>
+<p>   .&#x2F;user&#x2F;bin:用户命令</p>
+<p>   .&#x2F;user&#x2F;sbin:系统管理命令</p>
+<p>   .&#x2F;user&#x2F;local：本地自定义文件</p>
+<p>&#x2F;etc&#x2F;特定的系统配置文件。</p>
+<p>&#x2F;var&#x2F;log:这个是登录文件放置日志的的目录。里面比较重要的文件&#x2F;var&#x2F;log&#x2F;messages，&#x2F;var&#x2F;log&#x2F;harry(记录登陆者信息)等。</p>
+<p>&#x2F;var&#x2F;run&#x2F;：某些程序启动服务后，会将他们PID放置在这个目录下。</p>
+<p>&#x2F;var&#x2F;lib:程序本身执行的过程中需要使用到的数据文件放置的目录。再次目录下各自的软件应该要有各自的目录。举例来说，Mysql的数据库放置到&#x2F;var&#x2F;lib&#x2F;mysql，而rpm的数据库则放到&#x2F;var&#x2F;lib&#x2F;rpm目录下。</p>
+<p>&#x2F;root管理超级用户root的主目录</p>
+<p>&#x2F;dev 包含特殊的设备文件，提供系统用于访问硬件。</p>
+<p>&#x2F;boot 开机过程所需要的文件</p>
+<p>&#x2F;home&#x2F;主目录是普通用户存储个人配置和配置文件的位置 </p>
+<p>&#x2F;tmp&#x2F;存储临时文件。</p>
+<p>什么是绝对路径，相对路径？</p>
+<p>相对路径：从一个目录为起点到另外一个的目录的路径。<br>举例：<br>比如你的C盘有一个文件夹叫FIle，文件下有两个文件file one 和 file two<br>表示出file two的方法有两种</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">第一种（绝对路径表示法）：C：\FIle\file two</span><br><span class="line">第二种（相对路径表示法）：FIle two</span><br></pre></td></tr></table></figure>
 
-<p>autofs：目的是为了实现自动挂载远程用户的主目录。</p>
-<p>服务包：yum -y install autofs</p>
-<p>如何配置</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1. vim /etc/auto.master   (设置监控点，编辑auto.amster文件)</span><br><span class="line">2. /rhome       /etc/rhome.rule（随便找个位置添加这个内容，保存退出）</span><br><span class="line">3. vim /etc/rhome.rule （配置挂载策略）</span><br><span class="line">4. ldapuser0（用户名称） -fstype=nfs,wxr（服务器的类型）   服务器的地址（rhome.rule进行编辑）</span><br><span class="line">最后启动服务：system enable autofs --now</span><br><span class="line">autofs触发后，五分钟过后，就会自动删除。</span><br><span class="line">如何查看是否挂载成功呃？</span><br><span class="line"></span><br><span class="line">ls /rhome/ldapuser0 (如果显示permission denied 那么表示你挂载成功，因为显示的是有目录但是没有权限)</span><br><span class="line">ls /rhome/ (确认结果)</span><br><span class="line">ldapuser0</span><br></pre></td></tr></table></figure>]]></content>
+<p><strong>绝对路径</strong>：从根目录为起点到某一个目录的路径。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">例如：C:\FIle\path one\file one</span><br></pre></td></tr></table></figure>
+
+<p>命令pwd是显示该shell的当前工作目录，ls是显示该目录有哪些文件，</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin wdsj]$ pwd</span><br><span class="line">/home/lyj/wdsj</span><br><span class="line">[lyj@admin wdsj]$ ls</span><br><span class="line">1.txt  2.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>cd命令是来更改当前的工作目录，如果没有参数那么表示返回主目录，cd命令可以与绝对路径和相对路径一起使用。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[lyj@admin wdsj]$ pwd</span><br><span class="line">/home/lyj/wdsj</span><br><span class="line">[lyj@admin wdsj]$ cd</span><br><span class="line">[lyj@admin ~]$ pwd</span><br><span class="line">/home/lyj</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>touch创建文件，通常将文件的时间更新到当前日期和时间。</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[root@admin wdsj]# ls</span><br><span class="line">1.txt  2.txt</span><br><span class="line">[root@admin wdsj]# touch 3.txt</span><br><span class="line">[root@admin wdsj]# ls</span><br><span class="line">1.txt  2.txt  3.txt</span><br><span class="line">[root@admin wdsj]# ls -l</span><br><span class="line">总用量 8</span><br><span class="line">-rw-r--r--. 1 root root 244 9月   3 09:55 1.txt</span><br><span class="line">-rw-r--r--. 1 root root 132 9月   3 10:03 2.txt</span><br><span class="line">-rw-r--r--. 1 root root   0 9月   3 11:50 3.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>red hat</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>yum源的配置和使用(RHLE8)</title>
+    <url>/2022/09/07/yum%E6%BA%90%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<p>yum install  net-tools（网络工具包），了解新工具DNF</p>
+<p>RHEL配置yum软件仓库。yum（黄狗升级器）</p>
+<p>客户机的配置文件：&#x2F;etc&#x2F;yum.conf   etc&#x2F;yum.repos.d&#x2F;*.repo</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[仓库1标识]</span><br><span class="line">[仓库1标识] #任意写，可以写BaseOs</span><br><span class="line">  name = 仓库描述（）</span><br><span class="line">  baseurl = 仓库的地址</span><br><span class="line">  enable = 1| 0（1是启动，0是关闭）</span><br><span class="line">  gpgcheck = 1|0（是否进行仓库检验）</span><br><span class="line">    #gpkey = 地址（仓库检测地址）</span><br><span class="line">如果有多个仓库，那么他的名字必须不一样的</span><br></pre></td></tr></table></figure>
+
+<p>yum repolist（查看仓库的列表）</p>
+<p>yum -y install bash-completion(命令行的自动补齐) net-tool(网络命令工具)，bind-utils（DNS查询工具包） vim-en（如果安装包没有出来，退出重新连接即可） </p>
+<p>yum的使用</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++ yum clean all                 //清除缓存</span><br><span class="line">++ yum repolist                  //列出可用的软件包</span><br><span class="line">++ yum install 【安装的软件包】     //安装软件，如果安装多个软件包 中间用空格分开；</span><br><span class="line">   ++ 比如：yum -y install bash-completion  net-tool bind-utils &#x27;vim-en*&#x27;（如果不知道软件包可以通过这种方式来操作）</span><br><span class="line">++ yum list   软件包              //列出软件包的安装情况，当然可以查询多个软件包</span><br><span class="line">   ++ yum list | less            //列出所有的包，通过分屏展示，如果是@app表示安装了，如果是yum库表示没有安装</span><br><span class="line">++yum info                       //查询这个软件包是用来干什么的</span><br><span class="line">++yum provides                   //查询这个命令是哪个软件包提供的</span><br><span class="line">   ++比如 yum provides */route    //查询route命令是哪个软件包提供的</span><br><span class="line">++yum -y remove 软件包            //卸载软件包，这个时候依赖包也会被卸载。</span><br><span class="line">++ yum -y reinstall 软件包        //重装软件包，（找回来丢失的文件回来）</span><br><span class="line">++ yum -y update 软件包           //升级软件包</span><br></pre></td></tr></table></figure>
+
+<p>查看yum源不能用的原因？ （扩展）</p>
+<p>1.yum源的问题？</p>
+<p>yum源的服务器的原因</p>
+<p>2.yum repolist这个命令查看yum库是否配置成功（yum库的配置要仔细仔细。）？</p>
+<p>3.配置网络的问题</p>
+<p>检查ip的命令IP add list（或者是装net-tool软件包使用ipconfig）</p>
+]]></content>
       <categories>
         <category>linux基础</category>
       </categories>
@@ -341,33 +342,6 @@
 
 <p>基本流程</p>
 <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++vi/vim创建/修改文件</span><br><span class="line">vim 新文件名         //打开vi编辑器，并建立临时文件。</span><br><span class="line">#按i键切换输入模式，录入文本内容。</span><br><span class="line">按ESC，返回命令模式</span><br><span class="line">输入：键切换到编辑模式</span><br><span class="line">输入：wq保存退出编辑器。</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>linux基础</category>
-      </categories>
-      <tags>
-        <tag>RHLE 8</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>yum源的配置和使用(RHLE8)</title>
-    <url>/2022/09/07/yum%E6%BA%90%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[<p>yum install  net-tools（网络工具包），了解新工具DNF</p>
-<p>RHEL配置yum软件仓库。yum（黄狗升级器）</p>
-<p>客户机的配置文件：&#x2F;etc&#x2F;yum.conf   etc&#x2F;yum.repos.d&#x2F;*.repo</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">[仓库1标识]</span><br><span class="line">[仓库1标识] #任意写，可以写BaseOs</span><br><span class="line">  name = 仓库描述（）</span><br><span class="line">  baseurl = 仓库的地址</span><br><span class="line">  enable = 1| 0（1是启动，0是关闭）</span><br><span class="line">  gpgcheck = 1|0（是否进行仓库检验）</span><br><span class="line">    #gpkey = 地址（仓库检测地址）</span><br><span class="line">如果有多个仓库，那么他的名字必须不一样的</span><br></pre></td></tr></table></figure>
-
-<p>yum repolist（查看仓库的列表）</p>
-<p>yum -y install bash-completion(命令行的自动补齐) net-tool(网络命令工具)，bind-utils（DNS查询工具包） vim-en（如果安装包没有出来，退出重新连接即可） </p>
-<p>yum的使用</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++ yum clean all                 //清除缓存</span><br><span class="line">++ yum repolist                  //列出可用的软件包</span><br><span class="line">++ yum install 【安装的软件包】     //安装软件，如果安装多个软件包 中间用空格分开；</span><br><span class="line">   ++ 比如：yum -y install bash-completion  net-tool bind-utils &#x27;vim-en*&#x27;（如果不知道软件包可以通过这种方式来操作）</span><br><span class="line">++ yum list   软件包              //列出软件包的安装情况，当然可以查询多个软件包</span><br><span class="line">   ++ yum list | less            //列出所有的包，通过分屏展示，如果是@app表示安装了，如果是yum库表示没有安装</span><br><span class="line">++yum info                       //查询这个软件包是用来干什么的</span><br><span class="line">++yum provides                   //查询这个命令是哪个软件包提供的</span><br><span class="line">   ++比如 yum provides */route    //查询route命令是哪个软件包提供的</span><br><span class="line">++yum -y remove 软件包            //卸载软件包，这个时候依赖包也会被卸载。</span><br><span class="line">++ yum -y reinstall 软件包        //重装软件包，（找回来丢失的文件回来）</span><br><span class="line">++ yum -y update 软件包           //升级软件包</span><br></pre></td></tr></table></figure>
-
-<p>查看yum源不能用的原因？ （扩展）</p>
-<p>1.yum源的问题？</p>
-<p>yum源的服务器的原因</p>
-<p>2.yum repolist这个命令查看yum库是否配置成功（yum库的配置要仔细仔细。）？</p>
-<p>3.配置网络的问题</p>
-<p>检查ip的命令IP add list（或者是装net-tool软件包使用ipconfig）</p>
-]]></content>
       <categories>
         <category>linux基础</category>
       </categories>
@@ -454,18 +428,6 @@
       </tags>
   </entry>
   <entry>
-    <title>什么是DNS，DNS的作用？</title>
-    <url>/2022/08/28/%E4%BB%80%E4%B9%88%E6%98%AFDNS%EF%BC%8CDNS%E7%9A%84%E4%BD%9C%E7%94%A8%EF%BC%9F/</url>
-    <content><![CDATA[<p>什么是dns？<br>DNS（Domain Name System，域名系统），因特网上作为域名和IP地址互相映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。通过主机名，最终得到该主机对应的IP地址的过程叫做域名解析（或主机名解析）。DNS协议运行在UDP协议之上，使用端口号53<br>DNS是来做什么？<br>正向解析：根据主机名称（域名）查找对应的IP地址<br>反向解析：根据IP地址查找对应的主机域名<br><img src="/dns/2.jpg" alt="header"><br>DNS 的A记录什么？ NS记录什么？ SOA记录是什么？<br>1.A（Address）记录是用来指定主机名（或域名）对应的IP地址记录。<br>2.NS记录是域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析<br>3.SOA 这种记录是所有区域性文件中的强制性记录。</p>
-]]></content>
-      <categories>
-        <category>计算机网络基础</category>
-      </categories>
-      <tags>
-        <tag>DNS</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>公司面试</title>
     <url>/2022/08/19/%E5%85%AC%E5%8F%B8%E9%9D%A2%E8%AF%95/</url>
     <content><![CDATA[<p>1，NAT作用。<br>答，主要作用解决IPV4地址不够的问题。  NAT分 源NAT 、目的NAT、双向NAT.<br>源NAT作用：转换源IP，一般将内网的私网IP转换成公网IP , 让内网用户 可以访问 公网。<br>目的NAT （又叫端口映射）作用：转换目的IP。将内网服务器端口映射到公网,让公网用户能够访问内网的服务器。<br>双向NAT:  源IP和目的IP同时发生转换。 主要解决内网用户 通过 域名 或 公网IP 访问内网服务器。</p>
@@ -491,25 +453,41 @@
       </categories>
   </entry>
   <entry>
-    <title>归档与压缩</title>
-    <url>/2022/09/10/%E5%BD%92%E6%A1%A3%E4%B8%8E%E5%8E%8B%E7%BC%A9/</url>
-    <content><![CDATA[<p>归档:把多个文件归纳在一起tar。</p>
-<p>压缩：减小文件占用空间的大小。 gzip，bzip，xz</p>
-<p>tar的命令</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">tar -c 创建新文档</span><br><span class="line">tar -x  释放备份文档</span><br><span class="line">tar -f   指定文档名称</span><br><span class="line">tar -z    处理.gz格式</span><br><span class="line">tar -i    处理.bz2格式</span><br><span class="line">tar -j     处理.xz格式</span><br><span class="line">tar -t     查看归档</span><br><span class="line">tar -v      查看执行的详细信息</span><br><span class="line">tar -P       保留原来路径</span><br><span class="line">tar -p        保留权限</span><br><span class="line">tar -cvPp -f backup.tar  /usr/loca（如果加P的话，那么释放的话就能回到原来的位置）    </span><br><span class="line">比如：tar -c -f new.tar anac.cfg fig fig2 (创建一个归档)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    <title>配置autofs</title>
+    <url>/2022/09/10/autofus/</url>
+    <content><![CDATA[<p>本地文件系统：文档存放在本地连接的磁盘上<br>EXT4，XFS,SWAP</p>
+<p>网络文件系统：文档存放在局域网中的一台服务器的磁盘上的</p>
+<p>NFS :(network file system)</p>
+<p>samba共享：（windons共享）</p>
+<p>mount挂载（本地）：</p>
+<pre><code>  mount /dev/cdrom /mnt/dvd
 
-<p>gzip压缩文件，如果压缩过后原来的文件就会被删除。</p>
-<p>gzip 文件（压缩文件）</p>
-<p>gunzip 文件 （解压）</p>
-<p>记住默认情况下，bzip2，xzip的软件是没有安装的</p>
-<p>验证压缩是否为规定的压缩格式。</p>
-<p>file 文件名 进行查看文件类型。</p>
-]]></content>
+  mount /dev/sda1 /mnt/tdir
+</code></pre>
+<p>nfs客户端—</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">查看共享资源列表：showmount -e 目的主机（发现没法访问，原因是没有这个服务安装就好，yum install nfs-utlis）</span><br><span class="line">挂载nfs共享资源：mount 服务器地址：共享文件夹路径 /mnt/tdir </span><br></pre></td></tr></table></figure>
+
+<p>autofs：目的是为了实现自动挂载远程用户的主目录。</p>
+<p>服务包：yum -y install autofs</p>
+<p>如何配置</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1. vim /etc/auto.master   (设置监控点，编辑auto.amster文件)</span><br><span class="line">2. /rhome       /etc/rhome.rule（随便找个位置添加这个内容，保存退出）</span><br><span class="line">3. vim /etc/rhome.rule （配置挂载策略）</span><br><span class="line">4. ldapuser0（用户名称） -fstype=nfs,wxr（服务器的类型）   服务器的地址（rhome.rule进行编辑）</span><br><span class="line">最后启动服务：system enable autofs --now</span><br><span class="line">autofs触发后，五分钟过后，就会自动删除。</span><br><span class="line">如何查看是否挂载成功呃？</span><br><span class="line"></span><br><span class="line">ls /rhome/ldapuser0 (如果显示permission denied 那么表示你挂载成功，因为显示的是有目录但是没有权限)</span><br><span class="line">ls /rhome/ (确认结果)</span><br><span class="line">ldapuser0</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>linux基础</category>
       </categories>
       <tags>
         <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>什么是DNS，DNS的作用？</title>
+    <url>/2022/08/28/%E4%BB%80%E4%B9%88%E6%98%AFDNS%EF%BC%8CDNS%E7%9A%84%E4%BD%9C%E7%94%A8%EF%BC%9F/</url>
+    <content><![CDATA[<p>什么是dns？<br>DNS（Domain Name System，域名系统），因特网上作为域名和IP地址互相映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。通过主机名，最终得到该主机对应的IP地址的过程叫做域名解析（或主机名解析）。DNS协议运行在UDP协议之上，使用端口号53<br>DNS是来做什么？<br>正向解析：根据主机名称（域名）查找对应的IP地址<br>反向解析：根据IP地址查找对应的主机域名<br><img src="/dns/2.jpg" alt="header"><br>DNS 的A记录什么？ NS记录什么？ SOA记录是什么？<br>1.A（Address）记录是用来指定主机名（或域名）对应的IP地址记录。<br>2.NS记录是域名服务器记录，用来指定该域名由哪个DNS服务器来进行解析<br>3.SOA 这种记录是所有区域性文件中的强制性记录。</p>
+]]></content>
+      <categories>
+        <category>计算机网络基础</category>
+      </categories>
+      <tags>
+        <tag>DNS</tag>
       </tags>
   </entry>
   <entry>
@@ -548,58 +526,19 @@
       </tags>
   </entry>
   <entry>
-    <title>磁盘分区与格式化</title>
-    <url>/2022/09/19/%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA%E4%B8%8E%E6%A0%BC%E5%BC%8F%E5%8C%96/</url>
-    <content><![CDATA[<p>lsblk（查看磁盘的使用情况）</p>
-<p>要解决的问题？</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.添加交换分区</span><br><span class="line">2.创建VDO卷</span><br></pre></td></tr></table></figure>
+    <title>归档与压缩</title>
+    <url>/2022/09/10/%E5%BD%92%E6%A1%A3%E4%B8%8E%E5%8E%8B%E7%BC%A9/</url>
+    <content><![CDATA[<p>归档:把多个文件归纳在一起tar。</p>
+<p>压缩：减小文件占用空间的大小。 gzip，bzip，xz</p>
+<p>tar的命令</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">tar -c 创建新文档</span><br><span class="line">tar -x  释放备份文档</span><br><span class="line">tar -f   指定文档名称</span><br><span class="line">tar -z    处理.gz格式</span><br><span class="line">tar -i    处理.bz2格式</span><br><span class="line">tar -j     处理.xz格式</span><br><span class="line">tar -t     查看归档</span><br><span class="line">tar -v      查看执行的详细信息</span><br><span class="line">tar -P       保留原来路径</span><br><span class="line">tar -p        保留权限</span><br><span class="line">tar -cvPp -f backup.tar  /usr/loca（如果加P的话，那么释放的话就能回到原来的位置）    </span><br><span class="line">比如：tar -c -f new.tar anac.cfg fig fig2 (创建一个归档)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>在计算机上使用磁盘空间的过程</p>
-<p>识别磁盘—&gt;分区—&gt;格式化——&gt;访问挂载点</p>
-<p>fdisk -l ,lsblk—&gt;fdisk&#x2F;aprted&#x2F;gdisk—&gt;mkfs相关—&gt;mount—&gt;ls,vim</p>
-<p>磁盘分区的操作：</p>
-<p>fdisk -l</p>
-<p>fdisk -g</p>
-<p>fdisk  &#x2F;dev&#x2F;vdb(设备)&#x3D;&#x3D;&#x3D;》交互界面，需要执行w保存分区并且退出（适合新手）</p>
-<p>parted &#x2F;dev&#x2F;vdb &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;》适合老鸟，分区更改立即生效。</p>
-<p>分区模式msdos：四个分区，扩展分区，逻辑分区</p>
-<p>分区模式gpt：（支持&gt;2T空间）：主分区可以分128</p>
-<p>刷新硬盘分区表</p>
-<ol>
-<li>partprobe &#x2F;dev&#x2F;vdb 或者是 partx -a &#x2F;dev&#x2F;vdb</li>
-<li>reboot(重启)</li>
-</ol>
-<p>格式化操作</p>
-<p>mkfs (格式化)</p>
-<p>划分分区（fdisk命令创建）</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.fdisk /dev/vdb</span><br><span class="line">2.n（m(帮助) d（删除）p（查看） q（退出） w（保存）n是新建分区）</span><br><span class="line">3.回车（选一个系统名，这里选择默认）</span><br><span class="line">4.回车（这个扇区从哪里开始）</span><br><span class="line">5.+512M（这个扇区从哪里结束，这个扇区的大小）</span><br><span class="line">6.p（查看）</span><br><span class="line">7.w（保存）</span><br><span class="line">prartprobe（查看磁盘情况）</span><br></pre></td></tr></table></figure>
-
-<p>交换分区：单内存不够用的情况下，设置的虚拟内存，一般情况下是物理内存的一或者是两倍，&lt;16G。</p>
-<p>交换分区的原理，是将磁盘空间转换为虚拟内存，必须格式化。</p>
-<p>将分区划分为交换分区</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.格式化交换分区：mkswap 设备路径</span><br><span class="line">2.启动/停止控制swapon 设备路径/swapoff  设备路径</span><br><span class="line">3.查看交换分区的情况：swapon -s（或者是free）</span><br><span class="line">4.vim /etc/fstab</span><br><span class="line">5.dev/vdb2 swap swap  defaults，_netdev 0 0</span><br><span class="line">6.最后保存，退出，rboot（重启） 通过swapon -a（-a 自动启动所有SWAP装置） swapon -s进行查看</span><br></pre></td></tr></table></figure>
-
-<p>文件的挂载方式</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">（1）手动挂载：mount 设备路径 挂载点目录</span><br><span class="line">（2）开机自动挂载：修改/etc/fstab的配置文件，格式为</span><br><span class="line">设备路径 挂载点目录 系统文件类型 defaults，_netdev 0 0（这个是默认的）</span><br><span class="line">（3）半自动挂载（已经配置/etc/fstab）</span><br><span class="line">mount 设备路径</span><br><span class="line">mount 挂载点目录</span><br><span class="line">（4）触发挂载（按需自动挂载）auttofs服务</span><br></pre></td></tr></table></figure>]]></content>
-  </entry>
-  <entry>
-    <title>服务控制与安全开关(RHLE8)</title>
-    <url>/2022/09/07/%E6%9C%8D%E5%8A%A1%E6%8E%A7%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E5%BC%80%E5%85%B3/</url>
-    <content><![CDATA[<p>systemctl服务控制</p>
-<p>  系统控制器，用来管理linux系统的开机&#x2F;关机&#x2F;服务资源运行状态</p>
-<p>  直接执行systemctl列出可以管理的系统资源，包括各种各样的系统服务</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++控制当前的状态 systemctl start（启动）/stop(停止)/resart(重启)/status(状态)  服务名</span><br><span class="line">++sysemctl is-enabled 服务名 正在运行的</span><br><span class="line">++ systemctl is-active 服务名 </span><br><span class="line">++控制服务开机自启状态：systemctl enable | disable 服务名.... [-now]</span><br></pre></td></tr></table></figure>
-
-<p>firewalld，sElinux安全开关</p>
-<p> 防火墙的状态的控制：systemctl disable fallwolld -now（立即关闭，关闭开机自启）</p>
-<p>  防火墙的作用，内核的一套网络保护机制，通过firewalld服务来控制。</p>
-<p>++SElinux的作用：内核的一套系统保护机制，通过内核启动参数或者是启动配置控制。</p>
-<pre><code>++如何关闭SElinux机制（三种状态———Enforcing（强制保护） permissive（宽松模式） disabled（禁用））
-</code></pre>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">#vi /etc/selinux/config</span><br><span class="line">SELINUX=permissive =====》重启后生效</span><br><span class="line"></span><br><span class="line">#reboot 重启 </span><br></pre></td></tr></table></figure>
-
-<p> #setenforce 0|1             &#x2F;&#x2F;立即变成宽松模式|强制模式</p>
-<p> #getenforce                  &#x2F;&#x2F;查看SElinux的状态。</p>
+<p>gzip压缩文件，如果压缩过后原来的文件就会被删除。</p>
+<p>gzip 文件（压缩文件）</p>
+<p>gunzip 文件 （解压）</p>
+<p>记住默认情况下，bzip2，xzip的软件是没有安装的</p>
+<p>验证压缩是否为规定的压缩格式。</p>
+<p>file 文件名 进行查看文件类型。</p>
 ]]></content>
       <categories>
         <category>linux基础</category>
@@ -647,6 +586,67 @@
       <tags>
         <tag>RHLE 8</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>服务控制与安全开关(RHLE8)</title>
+    <url>/2022/09/07/%E6%9C%8D%E5%8A%A1%E6%8E%A7%E5%88%B6%E4%B8%8E%E5%AE%89%E5%85%A8%E5%BC%80%E5%85%B3/</url>
+    <content><![CDATA[<p>systemctl服务控制</p>
+<p>  系统控制器，用来管理linux系统的开机&#x2F;关机&#x2F;服务资源运行状态</p>
+<p>  直接执行systemctl列出可以管理的系统资源，包括各种各样的系统服务</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">++控制当前的状态 systemctl start（启动）/stop(停止)/resart(重启)/status(状态)  服务名</span><br><span class="line">++sysemctl is-enabled 服务名 正在运行的</span><br><span class="line">++ systemctl is-active 服务名 </span><br><span class="line">++控制服务开机自启状态：systemctl enable | disable 服务名.... [-now]</span><br></pre></td></tr></table></figure>
+
+<p>firewalld，sElinux安全开关</p>
+<p> 防火墙的状态的控制：systemctl disable fallwolld -now（立即关闭，关闭开机自启）</p>
+<p>  防火墙的作用，内核的一套网络保护机制，通过firewalld服务来控制。</p>
+<p>++SElinux的作用：内核的一套系统保护机制，通过内核启动参数或者是启动配置控制。</p>
+<pre><code>++如何关闭SElinux机制（三种状态———Enforcing（强制保护） permissive（宽松模式） disabled（禁用））
+</code></pre>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">#vi /etc/selinux/config</span><br><span class="line">SELINUX=permissive =====》重启后生效</span><br><span class="line"></span><br><span class="line">#reboot 重启 </span><br></pre></td></tr></table></figure>
+
+<p> #setenforce 0|1             &#x2F;&#x2F;立即变成宽松模式|强制模式</p>
+<p> #getenforce                  &#x2F;&#x2F;查看SElinux的状态。</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>磁盘分区与格式化</title>
+    <url>/2022/09/19/%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA%E4%B8%8E%E6%A0%BC%E5%BC%8F%E5%8C%96/</url>
+    <content><![CDATA[<p>lsblk（查看磁盘的使用情况）</p>
+<p>要解决的问题？</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.添加交换分区</span><br><span class="line">2.创建VDO卷</span><br></pre></td></tr></table></figure>
+
+<p>在计算机上使用磁盘空间的过程</p>
+<p>识别磁盘—&gt;分区—&gt;格式化——&gt;访问挂载点</p>
+<p>fdisk -l ,lsblk—&gt;fdisk&#x2F;aprted&#x2F;gdisk—&gt;mkfs相关—&gt;mount—&gt;ls,vim</p>
+<p>磁盘分区的操作：</p>
+<p>fdisk -l</p>
+<p>fdisk -g</p>
+<p>fdisk  &#x2F;dev&#x2F;vdb(设备)&#x3D;&#x3D;&#x3D;》交互界面，需要执行w保存分区并且退出（适合新手）</p>
+<p>parted &#x2F;dev&#x2F;vdb &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;》适合老鸟，分区更改立即生效。</p>
+<p>分区模式msdos：四个分区，扩展分区，逻辑分区</p>
+<p>分区模式gpt：（支持&gt;2T空间）：主分区可以分128</p>
+<p>刷新硬盘分区表</p>
+<ol>
+<li>partprobe &#x2F;dev&#x2F;vdb 或者是 partx -a &#x2F;dev&#x2F;vdb</li>
+<li>reboot(重启)</li>
+</ol>
+<p>格式化操作</p>
+<p>mkfs (格式化)</p>
+<p>划分分区（fdisk命令创建）</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.fdisk /dev/vdb</span><br><span class="line">2.n（m(帮助) d（删除）p（查看） q（退出） w（保存）n是新建分区）</span><br><span class="line">3.回车（选一个系统名，这里选择默认）</span><br><span class="line">4.回车（这个扇区从哪里开始）</span><br><span class="line">5.+512M（这个扇区从哪里结束，这个扇区的大小）</span><br><span class="line">6.p（查看）</span><br><span class="line">7.w（保存）</span><br><span class="line">prartprobe（查看磁盘情况）</span><br></pre></td></tr></table></figure>
+
+<p>交换分区：单内存不够用的情况下，设置的虚拟内存，一般情况下是物理内存的一或者是两倍，&lt;16G。</p>
+<p>交换分区的原理，是将磁盘空间转换为虚拟内存，必须格式化。</p>
+<p>将分区划分为交换分区</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1.格式化交换分区：mkswap 设备路径</span><br><span class="line">2.启动/停止控制swapon 设备路径/swapoff  设备路径</span><br><span class="line">3.查看交换分区的情况：swapon -s（或者是free）</span><br><span class="line">4.vim /etc/fstab</span><br><span class="line">5.dev/vdb2 swap swap  defaults，_netdev 0 0</span><br><span class="line">6.最后保存，退出，rboot（重启） 通过swapon -a（-a 自动启动所有SWAP装置） swapon -s进行查看</span><br></pre></td></tr></table></figure>
+
+<p>文件的挂载方式</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">（1）手动挂载：mount 设备路径 挂载点目录</span><br><span class="line">（2）开机自动挂载：修改/etc/fstab的配置文件，格式为</span><br><span class="line">设备路径 挂载点目录 系统文件类型 defaults，_netdev 0 0（这个是默认的）</span><br><span class="line">（3）半自动挂载（已经配置/etc/fstab）</span><br><span class="line">mount 设备路径</span><br><span class="line">mount 挂载点目录</span><br><span class="line">（4）触发挂载（按需自动挂载）auttofs服务</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>查找文件（find）</title>
@@ -721,6 +721,29 @@
       </tags>
   </entry>
   <entry>
+    <title>配置系统调优(RHLE 8 )</title>
+    <url>/2022/09/07/%E9%85%8D%E7%BD%AE%E7%B3%BB%E7%BB%9F%E8%B0%83%E4%BC%98/</url>
+    <content><![CDATA[<p>RHLE8的系统调优：</p>
+<p>一般情况下，系统调试在vim &#x2F;proc&#x2F;sysctl.conf比较复杂，所以RHLE 8提供比较方便调试软件包tuned。tuned提供了大量的优化方案，我们只有应用就可以了。</p>
+<p>管理工具：tuned-adm</p>
+<p>服务名：tuned</p>
+<p>要求是，为你的系统选择建议的tuned配置集并将他设置为默认设置。</p>
+<p>配置目录：&#x2F;etc&#x2F;tuned  ,   &#x2F;usr&#x2F;lib&#x2F;tuned&#x2F;优化方案&#x2F;</p>
+<p>tuned-adm按回车，这个时候会有提示：</p>
+<p>  ++tuned-adm list                                &#x2F;&#x2F;列出可以使用的优化方案</p>
+<p>  ++tuned-adm recommend                 &#x2F;&#x2F;查看系统推荐的方案</p>
+<p>  ++tuned-adm profile 《方案名称》     &#x2F;&#x2F; 切换为xx优化方案</p>
+<p>  ++tuned-adm active                           &#x2F;&#x2F;查看当前活动方案</p>
+<p>  ++ tuned-adm off                               &#x2F;&#x2F;关闭调优方案</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">考试时</span><br><span class="line">[root@ered~]#tuned-adm recommend  查看系统推荐方案</span><br><span class="line">virtual-guest</span><br><span class="line">[root@ered~]# tuned profile virtual-guest</span><br><span class="line">[root@ered~]# tuned-adm active</span><br><span class="line">Current active profile:virtual-guest</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>传统的防火墙部署</title>
     <url>/2022/08/22/%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E9%83%A8%E7%BD%B2/</url>
     <content><![CDATA[<p>传统的防火墙包括（ IPS(入侵防御)、IDS(入侵检测)、AV（防毒墙）、waf(web防火墙)）</p>
@@ -771,6 +794,25 @@
       </tags>
   </entry>
   <entry>
+    <title>重置root密码</title>
+    <url>/2022/09/10/%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/</url>
+    <content><![CDATA[<p>如何拿到管理员权限：</p>
+<p>1.如何不通过密码进入系统</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">开机过程中，修改启动参数，绕过密码验证，获得根分区控制权限</span><br><span class="line">RHLE 5/6：kernel 。。。。 single，回车确认后按b键启动。</span><br><span class="line">RHLE 7/8：按两下e键，修改linux行（ro改rw，末尾添加rd.break(告诉linux内核，不要找我要密码)），然后按ctrl+x 键启动</span><br><span class="line">这样就可以进系统了</span><br></pre></td></tr></table></figure>
+
+<p>2.如何设置密码</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Recovery模式的根系统目录：chroot /sysroot/(从临时环境切换到根系统)</span><br><span class="line">echo 123456 | passwd --stdin root       (设置密码)     </span><br><span class="line">SElinux机制的安全标签</span><br><span class="line">touch /.autorelabel====&gt;通知系统下次开机时重新标记SElinux安全上下文。</span><br><span class="line">exit</span><br><span class="line">reboot（重启就好）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>scp 命令（远程复制）</p>
+]]></content>
+      <categories>
+        <category>linux基础</category>
+      </categories>
+      <tags>
+        <tag>RHLE 8</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>静态路由</title>
     <url>/2022/09/03/%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1/</url>
     <content><![CDATA[<p>整个网络就好像是一条有很多转弯的路。就是到底目的地需要左转、右转等等，而静态路由就是告诉我们应该往哪个方向，简单的说静态路由在网络中就是一个方向的作用。</p>
@@ -805,48 +847,6 @@
       </categories>
       <tags>
         <tag>网络协议</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>配置系统调优(RHLE 8 )</title>
-    <url>/2022/09/07/%E9%85%8D%E7%BD%AE%E7%B3%BB%E7%BB%9F%E8%B0%83%E4%BC%98/</url>
-    <content><![CDATA[<p>RHLE8的系统调优：</p>
-<p>一般情况下，系统调试在vim &#x2F;proc&#x2F;sysctl.conf比较复杂，所以RHLE 8提供比较方便调试软件包tuned。tuned提供了大量的优化方案，我们只有应用就可以了。</p>
-<p>管理工具：tuned-adm</p>
-<p>服务名：tuned</p>
-<p>要求是，为你的系统选择建议的tuned配置集并将他设置为默认设置。</p>
-<p>配置目录：&#x2F;etc&#x2F;tuned  ,   &#x2F;usr&#x2F;lib&#x2F;tuned&#x2F;优化方案&#x2F;</p>
-<p>tuned-adm按回车，这个时候会有提示：</p>
-<p>  ++tuned-adm list                                &#x2F;&#x2F;列出可以使用的优化方案</p>
-<p>  ++tuned-adm recommend                 &#x2F;&#x2F;查看系统推荐的方案</p>
-<p>  ++tuned-adm profile 《方案名称》     &#x2F;&#x2F; 切换为xx优化方案</p>
-<p>  ++tuned-adm active                           &#x2F;&#x2F;查看当前活动方案</p>
-<p>  ++ tuned-adm off                               &#x2F;&#x2F;关闭调优方案</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">考试时</span><br><span class="line">[root@ered~]#tuned-adm recommend  查看系统推荐方案</span><br><span class="line">virtual-guest</span><br><span class="line">[root@ered~]# tuned profile virtual-guest</span><br><span class="line">[root@ered~]# tuned-adm active</span><br><span class="line">Current active profile:virtual-guest</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>linux基础</category>
-      </categories>
-      <tags>
-        <tag>RHLE 8</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>重置root密码</title>
-    <url>/2022/09/10/%E9%87%8D%E7%BD%AEroot%E5%AF%86%E7%A0%81/</url>
-    <content><![CDATA[<p>如何拿到管理员权限：</p>
-<p>1.如何不通过密码进入系统</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">开机过程中，修改启动参数，绕过密码验证，获得根分区控制权限</span><br><span class="line">RHLE 5/6：kernel 。。。。 single，回车确认后按b键启动。</span><br><span class="line">RHLE 7/8：按两下e键，修改linux行（ro改rw，末尾添加rd.break(告诉linux内核，不要找我要密码)），然后按ctrl+x 键启动</span><br><span class="line">这样就可以进系统了</span><br></pre></td></tr></table></figure>
-
-<p>2.如何设置密码</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Recovery模式的根系统目录：chroot /sysroot/(从临时环境切换到根系统)</span><br><span class="line">echo 123456 | passwd --stdin root       (设置密码)     </span><br><span class="line">SElinux机制的安全标签</span><br><span class="line">touch /.autorelabel====&gt;通知系统下次开机时重新标记SElinux安全上下文。</span><br><span class="line">exit</span><br><span class="line">reboot（重启就好）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>scp 命令（远程复制）</p>
-]]></content>
-      <categories>
-        <category>linux基础</category>
-      </categories>
-      <tags>
-        <tag>RHLE 8</tag>
       </tags>
   </entry>
 </search>
